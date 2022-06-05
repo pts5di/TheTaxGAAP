@@ -1,0 +1,19 @@
+{
+  "dependencies": {
+    "ejs": "^3.1.8",
+    "express": "^4.18.1"
+  },
+  "name": "gregg-lim-tutorial",
+  "version": "1.0.0",
+  "description": "This is my implementation of the Gregg Lim Tutorial on MongoDB and Node.js without React.js.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "author": "John D. McDonald",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^2.0.16"
+  }
+}
