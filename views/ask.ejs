@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%- include('layouts/header'); -%>
+    <body>
+        <!-- Navigation-->
+        <%- include('layouts/navbar'); -%>
+        <!-- Page Header-->
+        <header class="masthead" style="background-image: url('/assets/img/QandA.jpg')">
+            <div class="container position-relative px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5 justify-content-center">
+                    <div class="col-md-10 col-lg-8 col-xl-7">
+                        <div class="page-heading">
+                            <h1>Ready to Post Your Question?</h1>
+                            <span class="subheading">Cut Through the Noise.  One Question at a Time.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <!-- Main Content-->
+        <main class="mb-4">
+            <div class="container px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5 justify-content-center">
+                    <div class="col-md-10 col-lg-8 col-xl-7">
+                        <div class="my-5">
+                            <!-- * * * * * * * * * * * * * * *-->
+                            <!-- * * SB Forms Contact Form * *-->
+                            <!-- * * * * * * * * * * * * * * *-->
+                            <form action="/posts/store" method="POST">
+                                <div class="form-floating">
+                                    <input class="form-control" id="title" type="text" placeholder="Short title..." data-sb-validations="required" name="title"/>
+                                    <label for="title">Title</label>
+                                    <div class="invalid-feedback" data-sb-feedback="title:required">A username is required.</div>
+                                </div>
+                                <div class="form-floating">
+                                    <input class="form-control" id="keyword-1" type="text" placeholder="Short title..." data-sb-validations="required" name="keyword1"/>
+                                    <label for="name">Keyword</label>
+                                    <div class="invalid-feedback" data-sb-feedback="name:required">At least one keyword required.</div>
+                                </div>
+                                <div class="form-floating">
+                                    <textarea class="form-control" id="body" placeholder="Enter your message here..." style="height: 12rem" data-sb-validations="required" name="body"></textarea>
+                                    <label for="message">Message</label>
+                                    <div class="invalid-feedback" data-sb-feedback="message:required">A message is required.</div>
+                                </div>
+                                <br />
+                                <!-- This is what your users will see when there is-->
+                                <!-- an error submitting the form-->
+                                <div class="d-none" id="submitErrorMessage"><div class="text-center text-danger mb-3">Error sending message!</div></div>
+                                <!-- Submit Button-->
+                                <button class="btn btn-primary text-uppercase" id="submitButton" type="submit">Post</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <!-- Footer-->
+        <%- include('layouts/footer'); -%>
+        <!-- Scripts-->
+        <%- include('layouts/scripts'); -%>
+    </body>
+</html>
