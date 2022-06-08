@@ -1,11 +1,5 @@
 const http = require('http')
 const fs = require('fs')
-//const signupPage = fs.readFileSync('./public/signup.html')
-//const loginPage = fs.readFileSync('./public/login.html')
-//const myProfilePage = fs.readFileSync('./public/myProfile.html')
-//const researchPage = fs.readFileSync('./public/research.html')
-//const askPage = fs.readFileSync('./public/ask.html')
-//const homePage = fs.readFileSync('./public/index.html')
 const express = require('express')
 const path = require('path')
 const mongoose = require('mongoose')
@@ -63,9 +57,25 @@ app.get('/research', (req,res) => {
     res.render('research');
 })
 
-app.get('/posts/new', (req,res) => {
-    res.render('ask');
-})
+
+/*
+*   Import Validation Middleware
+*/
+const validateMiddleware = require("./middleware/validationMiddleware")
+const authMiddleware = require('./middleware/authMiddleware');
+const redirectIfAuthenticatedMiddleware = require('./middleware/redirectIfAuthenticatedMiddleware')
+
+/*
+* Handle Question Posts
+*/
+const newPostController = require('./controllers/newPost')
+app.get('/posts/new', authMiddleware, newPostController)
+const homeController = require('./controllers/home')
+app.get('/', homeController)
+//const storePostController = require('./controllers/storePost')
+//app.get('/post/:id', storePostController)
+const getPostController = require('./controllers/getPost')
+app.post('/post/store', authMiddleware, getPostController)
 
 app.get('/', async (req,res) => {
     const questions = await Question.find({})
@@ -80,13 +90,31 @@ app.get('/', async (req,res) => {
 */
 const newUserController = require('./controllers/newUser')
 const storeUserController = require('./controllers/storeUser')
+
 app.get('/auth/register', newUserController)
 app.post('/users/register', storeUserController)
 
 /*
+*   Login Existing User
+*/
+const loginController = require("./controllers/login")
+app.get('/auth/login', loginController);
+const loginUserController = require("./controllers/loginUser")
+app.post('/users/login', loginUserController)
+
+/*
+*   Establish User Sessions
+*/ 
+const expressSession = require('express-session');
+app.use(expressSession ({
+    secret: 'secret'
+}))
+
+
+/*
 *   Store Posted Messages in the Database
 */
-//const validateMiddleware = require("./middleware/validateMiddleware")
+
 const Question = require('./models/Question.js')
 app.post('/posts/store', (req,res) => {
     // The model creates a new document with browser data
@@ -94,3 +122,31 @@ app.post('/posts/store', (req,res) => {
         res.redirect('/');
     })
 })
+
+/*
+*   Logout
+*/ 
+const logoutController = require('./controllers/logout')
+app.get('/auth/logout', logoutController)
+
+/*
+*   Conditionally Display New Post, Login and New User
+*/ 
+global.loggedIn = null;
+
+app.use("*", (req, res, next) => {
+    loggedIn = req.session.userId;
+    next()
+});
+
+/*
+*   Handle page not found
+*/
+app.use((req,res) => res.render('notfound'));
+
+/*
+*   Flush the errors associated with a session
+*   after each req, res cycle.  See also constrollers/storeUser.js
+*/
+const flash = require('connect-flash');
+app.use(flash());

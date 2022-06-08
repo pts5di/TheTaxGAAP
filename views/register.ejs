@@ -23,10 +23,19 @@
                 <div class="row gx-4 gx-lg-5 justify-content-center">
                     <div class="col-md-10 col-lg-8 col-xl-7">
                         <div class="my-5">
+                            <!--This Displays the Errors in a Registration Form-->
+                            <!--These errors were passed here from newUser.js-->
+                            <% if(errors != null && errors.length > 0) { %>
+                                <ul class = "list-group"></ul>
+                                    <% for (var i = 0; i < errors.length; i++) { %>
+                                        <li class="list-group-item list-group-item-danger"><%=errors[i] %></li>
+                                    <%} %>
+                                </ul>       
+                            <% } %> 
                             <!-- * * * * * * * * * * * * * * *-->
                             <!-- * * SB Forms Contact Form * *-->
                             <!-- * * * * * * * * * * * * * * *-->
-                            <form action="/users/register" method="POST" enctype="multipart/form-data">
+                            <form action="/users/register" method="POST">
                                 <div class="form-floating">
                                     <input class="form-control" id="username" type="text" placeholder="User Name" data-sb-validations="required" name = "username"/>
                                     <label for="title">Username</label>
