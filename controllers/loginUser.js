@@ -1,26 +1,39 @@
-const bcrypt = require("bcrypt")
-const User = require("../models/User")
+const bcrypt = require('bcrypt')
+const User = require('../models/User')
 
-module.exports = (req, res) => {
-    const  { username, password } = req.body;
+console.log("You are inside loginUser.js")
 
-    User.findOne({username:username}, (error, user) => {
+module.exports = function (req,res) {
 
-        if(user) {
-            bcrypt.compare(password, user.password, (error, same) => {
-                if(same) {
-                    // If the user's password matches
-                    // store the user's session
-                    // session package saves this data on the user's browser so
-                    // the same cookie will be sent back to the server with the auth id
+   // console.log("Before username, password")
+
+    const { username,password } = req.body
+
+   // console.log("username: " + username + " password: " + password)
+    
+    User.findOne({username: username},function(error,user){        
+
+       // console.log("Inside findOne.")
+
+        if(user){
+
+            console.log("Inside if(user)")
+
+            bcrypt.compare(password, user.password, (error,same)=>{
+                if(same){
                     req.session.userId = user._id
                     res.redirect('/')
-                } else {
+                }
+                else{
                     res.redirect('/auth/login')
                 }
             })
         }
-        else {
+        else{
+
+            console.log("Inside else")
+
+            console.log("/auth/login::",user)
             res.redirect('/auth/login')
         }
     })

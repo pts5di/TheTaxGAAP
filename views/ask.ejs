@@ -38,14 +38,16 @@
                                     <div class="invalid-feedback" data-sb-feedback="name:required">At least one keyword required.</div>
                                 </div>
                                 <div class="form-floating">
-                                    <textarea class="form-control" id="body" placeholder="Enter your message here..." style="height: 12rem" data-sb-validations="required" name="body"></textarea>
-                                    <label for="message">Question</label>
+                                    <label>Question</label>
+                                    <textarea id="body" class="form-control"  placeholder="Enter your message here..." style="height: 12rem" data-sb-validations="required" name="body"></textarea>
                                     <script>
-                                        $('#body').summernote({
-                                            placeholder: 'Begin typing here . . .',
-                                            tabsize: 2,
-                                            height: 200
-                                        })
+                                        $(document).ready(function() {
+                                            $('#body').summernote({
+                                                placeholder: 'Begin typing here . . .',
+                                                tabsize: 2,
+                                                height: 200
+                                            }).text();
+                                        });
                                     </script>
                                     <div class="invalid-feedback" data-sb-feedback="message:required">A message is required.</div>
                                 </div>

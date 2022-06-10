@@ -45,10 +45,6 @@ app.get('/signup', (req,res) => {
    res.render('signup');
 })
 
-app.get('/login', (req,res) => {
-    res.render('login');
-})
-
 app.get('/myProfile', (req,res) => {
     res.render('myProfile');
 })
@@ -66,68 +62,21 @@ const authMiddleware = require('./middleware/authMiddleware');
 const redirectIfAuthenticatedMiddleware = require('./middleware/redirectIfAuthenticatedMiddleware')
 
 /*
-* Handle Question Posts
-*/
-const newPostController = require('./controllers/newPost')
-app.get('/posts/new', authMiddleware, newPostController)
-const homeController = require('./controllers/home')
-app.get('/', homeController)
-//const storePostController = require('./controllers/storePost')
-//app.get('/post/:id', storePostController)
-const getPostController = require('./controllers/getPost')
-app.post('/post/store', authMiddleware, getPostController)
-
-app.get('/', async (req,res) => {
-    const questions = await Question.find({})
-    res.render('index', {
-        questions: questions
-    });
-})
-
-
-/*
-*   Register New User
-*/
-const newUserController = require('./controllers/newUser')
-const storeUserController = require('./controllers/storeUser')
-
-app.get('/auth/register', newUserController)
-app.post('/users/register', storeUserController)
-
-/*
-*   Login Existing User
-*/
-const loginController = require("./controllers/login")
-app.get('/auth/login', loginController);
-const loginUserController = require("./controllers/loginUser")
-app.post('/users/login', loginUserController)
-
-/*
 *   Establish User Sessions
 */ 
 const expressSession = require('express-session');
 app.use(expressSession ({
-    secret: 'secret'
+    secret: 'secret',
+    resave:false,//added 
+    saveUninitialized: true //added   
 }))
 
-
 /*
-*   Store Posted Messages in the Database
+*   Flush the errors associated with a session
+*   after each req, res cycle.  See also controllers/storeUser.js
 */
-
-const Question = require('./models/Question.js')
-app.post('/posts/store', (req,res) => {
-    // The model creates a new document with browser data
-    Question.create(req.body,(error,question) => {
-        res.redirect('/');
-    })
-})
-
-/*
-*   Logout
-*/ 
-const logoutController = require('./controllers/logout')
-app.get('/auth/logout', logoutController)
+const flash = require('connect-flash');
+app.use(flash());
 
 /*
 *   Conditionally Display New Post, Login and New User
@@ -140,13 +89,65 @@ app.use("*", (req, res, next) => {
 });
 
 /*
+* Handle Question Posts
+*/
+const newPostController = require('./controllers/newPost')
+app.get('/posts/new', /*authMiddleware,*/ newPostController)
+const homeController = require('./controllers/home')
+app.get('/', homeController)
+const getPostController = require('./controllers/getPost')
+app.get('/posts/:id', getPostController)
+const storePostController = require('./controllers/storePost')
+app.post('/posts/store', /*authMiddleware, */ storePostController)
+
+/*
+const Question = require('./models/Question.js')
+app.post('/posts/store', (req,res) => {
+    // The model creates a new document with browser data
+    Question.create(req.body,(error,question) => {
+        res.redirect('/');
+    })
+})
+*/
+
+/*
+app.get('/', async (req,res) => {
+    const questions = await Question.find({})
+    res.render('index', {
+        questions: questions
+    });
+})
+*/
+
+
+/*
+*   Register New User
+*/
+const newUserController = require('./controllers/newUser')
+const storeUserController = require('./controllers/storeUser')
+
+app.get('/auth/register', newUserController)
+console.log("Before /users/register")
+app.post('/users/register', storeUserController)
+console.log("After /users/register")
+
+/*
+*   Login Existing User
+*/
+const loginController = require("./controllers/login")
+app.get('/auth/login', loginController);
+const loginUserController = require('./controllers/loginUser')
+console.log("Just before /users/login")
+app.post('/users/login', loginUserController)
+console.log("After /users/login")
+
+/*
+*   Logout
+*/ 
+const logoutController = require('./controllers/logout')
+app.get('/auth/logout', logoutController)
+
+/*
 *   Handle page not found
 */
 app.use((req,res) => res.render('notfound'));
-
-/*
-*   Flush the errors associated with a session
-*   after each req, res cycle.  See also constrollers/storeUser.js
-*/
-const flash = require('connect-flash');
-app.use(flash());
