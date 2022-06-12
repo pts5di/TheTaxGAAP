@@ -3,9 +3,10 @@ const Question = require('../models/Question')
 const path = require('path')
 
 module.exports = (req, res) => {
-    console.log("Body Title: " + req.body.title)
-    console.log("Body Body: " + req.body.body)
-    let bodyPlainText = req.body.body.replace(/<\/?[^>]+(>|$)/g, "")
+    console.log("Body Title: " + req.body.title);
+    console.log("Body Body: " + req.body.body);
+    let bodyPlainText = req.body.body.replace(/<\/?[^>]+(>|$)/g, "");
+    bodyPlainText = bodyPlainText.replace(/&(nbsp|amp|quot|lt|gt);/g," ");
     Question.create({title: req.body.title, keyword1: req.body.keyword1, body: bodyPlainText, userid: req.session.userId}, (error, user) =>{
       console.log("Inside Question.create")
       if(error){

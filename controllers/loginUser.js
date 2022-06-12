@@ -1,8 +1,6 @@
 const bcrypt = require('bcrypt')
 const User = require('../models/User')
 
-console.log("You are inside loginUser.js")
-
 module.exports = function (req,res) {
 
    // console.log("Before username, password")

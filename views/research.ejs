@@ -5,80 +5,70 @@
         <!-- Navigation-->
         <%- include('layouts/navbar'); -%>
         <!-- Page Header-->
-        <header class="masthead" style="background-image: url('assets/img/tax-time.jpg')">
+        <header class="masthead" style="background-image: url('/assets/img/QandA.jpg')">
             <div class="container position-relative px-4 px-lg-5">
                 <div class="row gx-4 gx-lg-5 justify-content-center">
                     <div class="col-md-10 col-lg-8 col-xl-7">
-                        <div class="site-heading">
-                            <h1>Research</h1>
-                            <span class="subheading">There's Power in Numbers.</span>
+                        <div class="page-heading">
+                            <h1>Ready to Post Your Question?</h1>
+                            <span class="subheading">Cut Through the Noise.  One Question at a Time.</span>
                         </div>
                     </div>
                 </div>
             </div>
         </header>
         <!-- Main Content-->
-        <div class="container px-4 px-lg-5">
-            <div class="row gx-4 gx-lg-5 justify-content-center">
-                <div class="col-md-10 col-lg-8 col-xl-7">
-                    <!-- Post preview-->
-                    <div class="post-preview">
-                        <a href="post.html">
-                            <h2 class="post-title">Man must explore, and this is exploration at its greatest</h2>
-                            <h3 class="post-subtitle">Problems look mighty small from 150 miles up</h3>
-                        </a>
-                        <p class="post-meta">
-                            Posted by
-                            <a href="#!">Start Bootstrap</a>
-                            on September 24, 2022
-                        </p>
+        <main class="mb-4">
+            <div class="container px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5 justify-content-center">
+                    <div class="col-md-10 col-lg-8 col-xl-7">
+                        <div class="my-5">
+                            <!-- * * * * * * * * * * * * * * *-->
+                            <!-- * * SB Forms Contact Form * *-->
+                            <!-- * * * * * * * * * * * * * * *-->
+                            <h1>Enter Your Search Terms</h1>
+                            <p>Enter at least one, but no more than five search terms.  A term may be a phrase like 'functional currency' or 'Section 351'.  Capitalization does not matter.  Avoid using punctuation.</p>
+                            <form action="/display/results" method="POST">
+                                <div class="form-floating">
+                                    <input class="form-control" id="first_term" type="text"  placeholder="Enter First Term Here" data-sb-validations="required" name="first_term"/>
+                                    <div class="invalid-feedback" data-sb-feedback="title:required">At least one search term is required.</div> 
+                            </div>
+                                <div class="form-floating">
+                                    <div class="form-floating">
+                                        <input class="form-control" id="second_term" type="text" placeholder="Second Term" name="second_term"/>
+                                        <div class="invalid-feedback" data-sb-feedback="title:required">Please re-enter your term.</div>
+                                    </div>                    
+                                </div>
+                                <div class="form-floating">
+                                    <div class="form-floating">
+                                        <input class="form-control" id="third_term" type="text" placeholder="Third Term" name="third_term"/>
+                                        <div class="invalid-feedback" data-sb-feedback="title:required">Please re-enter your term.</div>
+                                    </div>                    
+                                </div>
+                                <div class="form-floating">
+                                    <div class="form-floating">
+                                        <input class="form-control" id="fourth_term" type="text" placeholder="Fourth Term" name="fourth_term"/>
+                                        <div class="invalid-feedback" data-sb-feedback="title:required">Please re-enter your term.</div>
+                                    </div>                    
+                                </div>
+                                <div class="form-floating">
+                                    <div class="form-floating">
+                                        <input class="form-control" id="fifth_term" type="text" placeholder="Fifth Term" name="fifth_term"/>
+                                        <div class="invalid-feedback" data-sb-feedback="title:required">Please re-enter your term.</div>
+                                    </div>                    
+                                </div>
+                                <br />
+                                <!-- This is what your users will see when there is-->
+                                <!-- an error submitting the form-->
+                                <div class="d-none" id="submitErrorMessage"><div class="text-center text-danger mb-3">Error sending message!</div></div>
+                                <!-- Submit Button-->
+                                <button class="btn btn-primary text-uppercase" id="submitButton" type="submit">Search</button>
+                            </form>
+                        </div>
                     </div>
-                    <!-- Divider-->
-                    <hr class="my-4" />
-                    <!-- Post preview-->
-                    <div class="post-preview">
-                        <a href="post.html"><h2 class="post-title">I believe every human has a finite number of heartbeats. I don't intend to waste any of mine.</h2></a>
-                        <p class="post-meta">
-                            Posted by
-                            <a href="#!">Start Bootstrap</a>
-                            on September 18, 2022
-                        </p>
-                    </div>
-                    <!-- Divider-->
-                    <hr class="my-4" />
-                    <!-- Post preview-->
-                    <div class="post-preview">
-                        <a href="post.html">
-                            <h2 class="post-title">Science has not yet mastered prophecy</h2>
-                            <h3 class="post-subtitle">We predict too much for the next year and yet far too little for the next ten.</h3>
-                        </a>
-                        <p class="post-meta">
-                            Posted by
-                            <a href="#!">Start Bootstrap</a>
-                            on August 24, 2022
-                        </p>
-                    </div>
-                    <!-- Divider-->
-                    <hr class="my-4" />
-                    <!-- Post preview-->
-                    <div class="post-preview">
-                        <a href="post.html">
-                            <h2 class="post-title">Failure is not an option</h2>
-                            <h3 class="post-subtitle">Many say exploration is part of our destiny, but it’s actually our duty to future generations.</h3>
-                        </a>
-                        <p class="post-meta">
-                            Posted by
-                            <a href="#!">Start Bootstrap</a>
-                            on July 8, 2022
-                        </p>
-                    </div>
-                    <!-- Divider-->
-                    <hr class="my-4" />
-                    <!-- Pager-->
-                    <div class="d-flex justify-content-end mb-4"><a class="btn btn-primary text-uppercase" href="#!">Older Posts →</a></div>
                 </div>
             </div>
-        </div>
+        </main>
         <!-- Footer-->
         <%- include('layouts/footer'); -%>
         <!-- Scripts-->

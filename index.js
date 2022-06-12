@@ -87,37 +87,27 @@ app.use("*", (req, res, next) => {
     loggedIn = req.session.userId;
     next()
 });
+const homeController = require('./controllers/home')
+app.get('/', homeController)
 
 /*
 * Handle Question Posts
 */
 const newPostController = require('./controllers/newPost')
 app.get('/posts/new', /*authMiddleware,*/ newPostController)
-const homeController = require('./controllers/home')
-app.get('/', homeController)
-const getPostController = require('./controllers/getPost')
-app.get('/posts/:id', getPostController)
 const storePostController = require('./controllers/storePost')
 app.post('/posts/store', /*authMiddleware, */ storePostController)
 
 /*
-const Question = require('./models/Question.js')
-app.post('/posts/store', (req,res) => {
-    // The model creates a new document with browser data
-    Question.create(req.body,(error,question) => {
-        res.redirect('/');
-    })
-})
+* Handle Research Request
 */
+const researchController = require('./controllers/research')
+app.get('/research', researchController)
+const displaySearchResultsController = require('./controllers/displayPosts')
+app.post('/display/results', displaySearchResultsController)
 
-/*
-app.get('/', async (req,res) => {
-    const questions = await Question.find({})
-    res.render('index', {
-        questions: questions
-    });
-})
-*/
+//const getPostController = require('./controllers/getPost')
+//app.get('/posts/:id', getPostController)
 
 
 /*
@@ -127,9 +117,7 @@ const newUserController = require('./controllers/newUser')
 const storeUserController = require('./controllers/storeUser')
 
 app.get('/auth/register', newUserController)
-console.log("Before /users/register")
 app.post('/users/register', storeUserController)
-console.log("After /users/register")
 
 /*
 *   Login Existing User
@@ -137,9 +125,7 @@ console.log("After /users/register")
 const loginController = require("./controllers/login")
 app.get('/auth/login', loginController);
 const loginUserController = require('./controllers/loginUser')
-console.log("Just before /users/login")
 app.post('/users/login', loginUserController)
-console.log("After /users/login")
 
 /*
 *   Logout
