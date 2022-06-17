@@ -9,6 +9,7 @@ const bcrypt = require('bcrypt')
 */
 
 var uniqueValidator = require('mongoose-unique-validator');
+const { intersect } = require('mathjs');
 
 const UserSchema = new Schema ({
 
@@ -24,6 +25,26 @@ const UserSchema = new Schema ({
     email: {
         type: String,
         required: [true, 'Please provide an email.']
+    },
+    asked: {
+        type: Number,
+        default: 0
+    }, 
+    answered: {
+        type: Number,
+        default: 0
+    },
+    askedscore: {
+        type: Number,
+        default: 0
+    }, 
+    answerscore: {
+        type: Number,
+        default: 0
+    }, 
+    rank: {
+        type: Number,
+        default: 0
     }
 })
 

@@ -12,7 +12,10 @@ const QuestionSchema = new Schema ({
     keyword2: String,
     keyword3: String,
     body: String,
-    upvotes: Number,
+    upvotes: {
+        type: Number,
+        default: 0
+    },
     datePosted: {
         type: Date,
         default: new Date()

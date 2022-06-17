@@ -11,8 +11,6 @@ module.exports = function (req,res) {
     
     User.findOne({username: username},function(error,user){        
 
-       // console.log("Inside findOne.")
-
         if(user){
 
             console.log("Inside if(user)")
@@ -30,7 +28,6 @@ module.exports = function (req,res) {
         else{
 
             console.log("Inside else")
-
             console.log("/auth/login::",user)
             res.redirect('/auth/login')
         }

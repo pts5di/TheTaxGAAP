@@ -25,13 +25,34 @@
                         <p>Your profile on TheTaxGAAP is your online 'reputation'.  Just like in the real world, your reputation rises when you answer questions correctly and falls when you answer questions incorrectly.  Similarly, you reputation rises when you interact professionally with others and decreases when you interact unprofessionally with others.</p>
                         <p>To incentivize people to post good questions and answers in a respectful manner, TheTaxGAAP assigns you a level based on your profile.  Each level entitles the user to certain rights.  Each level and the rights you obtain are set forth below.  The rights are cumulative (i.e., a Beginner has all the rights that a Newbie has).</p>
                         <ul>
-                            <li><strong>TaxGuru:</strong> You can can downvote answers.</li>
-                            <li><strong>Journeyman:</strong> You can upvote answers.</li>
+                            <li><strong>TaxGuru:</strong> You can can downvote questions.</li>
+                            <li><strong>Journeyman:</strong> You can downvote answers.</li>
+                            <li><strong>Apprentice:</strong> You can upvote answers. </li>
                             <li><strong>Beginner:</strong> You can answer questions.</li>
                             <li><strong>Newbie:</strong> You have the right to ask questions. You can research existing questions and answers.</li>
                           </ul> 
                         <p>TheTaxGAAP revises your profile automatically based on your engagement with the site.  Unprofessional behavior such as cursewords, doxxing, or defamatory language will result in a temporary or permanent ban from the site.</p>
-                        <!-- PLACE TABLE HERE WITH INFORMATION TAKEN FROM DATABASE -->
+                        <p><strong>Questions Asked:</strong> <%= thisUser.asked %></p>
+                        <p><strong>Questions Answered:</strong> <%= thisUser.answered %></p>
+                        <p><strong>Question Upvotes:</strong> <%= thisUser.askedscore %></p>
+                        <p><strong>Answer Upvotes:</strong> <%= thisUser.answerscore %></p>
+                        <% 
+                        console.log(thisUser.asked)
+                        var status = "Newbie";
+                        if (thisUser.rank > 1) {
+                            status = "Beginner";
+                        }
+                        if (thisUser.rank > 10) {
+                            status = "Apprentice";
+                        }
+                        if (thisUser.rank > 100) {
+                            status = "Journeyman";
+                        }
+                        if (thisUser.rank > 500) {
+                            status = "TaxGuru";
+                        }
+                        %>
+                        <p><strong>Reputation: </strong> <%= status %></p>
                     </div>
                 </div>
             </div>

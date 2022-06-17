@@ -40,19 +40,12 @@ app.listen(4000, () => {
     console.log("App listening on port 4000.")
 })
 
-
+/*
+*   Handle SignUp
+*/
 app.get('/signup', (req,res) => {
    res.render('signup');
 })
-
-app.get('/myProfile', (req,res) => {
-    res.render('myProfile');
-})
-
-app.get('/research', (req,res) => {
-    res.render('research');
-})
-
 
 /*
 *   Import Validation Middleware
@@ -89,6 +82,20 @@ app.use("*", (req, res, next) => {
 });
 const homeController = require('./controllers/home')
 app.get('/', homeController)
+
+/*
+*   Handle MyProfile
+*/
+const myProfileController = require("./controllers/myProfile");
+app.get('/myProfile', myProfileController)
+
+/*
+*   Handle Research
+*/
+app.get('/research', (req,res) => {
+    res.render('research');
+})
+
 
 /*
 * Handle Question Posts
