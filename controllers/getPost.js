@@ -1,3 +1,6 @@
+
+/*
+
 const Question = require('../models/Question')
 
 module.exports = async (req,res) =>{
@@ -6,3 +9,5 @@ module.exports = async (req,res) =>{
         question
     })
 }
+
+*/

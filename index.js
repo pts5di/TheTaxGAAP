@@ -75,7 +75,7 @@ app.use(flash());
 *   Conditionally Display New Post, Login and New User
 */ 
 global.loggedIn = null;
-
+   
 app.use("*", (req, res, next) => {
     loggedIn = req.session.userId;
     next()

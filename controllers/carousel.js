@@ -1,3 +1,6 @@
+
+
+/*
 $(document).ready(function () {
     var infoToast = document.getElementById('infoToast');
     infoToast.addEventListener('hidden.bs.toast', function () {
@@ -34,4 +37,5 @@ $("#vertical-carousel").on("touchstart", function (event) {
     });
     event.preventDefault();
 });
+*/
 

@@ -42,13 +42,9 @@
                                     <textarea id="body" class="form-control"  placeholder="Enter your message here..." style="height: 12rem" data-sb-validations="required" name="body"></textarea>
                                     <script>
                                         $(document).ready(function() {
-                                            $('#body').summernote({
-                                                placeholder: 'Begin typing here . . .',
-                                                tabsize: 2,
-                                                height: 200
-                                            }).text();
+                                            $('#body').summernote();
                                         });
-                                    </script>
+                                    </script>  
                                     <div class="invalid-feedback" data-sb-feedback="message:required">A message is required.</div>
                                 </div>
                                 <br />
