@@ -5798,13 +5798,13 @@ textarea.form-control-lg {
     transition: none;
   }
 }
-.carousel-control-prev:hover, .carousel-control-prev:focus,
-.carousel-control-next:hover,
+.carousel-control-prev:hover::after, .carousel-control-prev:focus,
+.carousel-control-next:hover::after,
 .carousel-control-next:focus {
-  color: red;
+  color: green;
   text-decoration: none;
   outline: 0;
-  opacity: 0.9;
+  opacity: .8;
 }
 
 .carousel-control-prev {

@@ -20,7 +20,11 @@
       </div>
     </div>
   </header>
+  
+  <!-- Moved jquery import up here on purpose. -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
+  <!-- Begin Main Class-->
   <main class="mb-4">
     <div class="container px-4 px-lg-5">
       <div class="row gx-4 gx-lg-5 justify-content-center">
@@ -38,6 +42,7 @@
                 <%   
                 var max = questions.length
                 for (var i = 0; i < max; i++) {
+                  relevance = questions[i].upvotes
                 %>
               <div class="carousel-item" style="text-align: justify" >
                 <div class="row" id = "message-body">
@@ -46,150 +51,82 @@
                 </div>
                 <div class="row">
                   <p><strong>Posted by: </strong><%= questions[i].userid.username %> on <%= questions[i].datePosted.toDateString() %> </p>
+                  <p id="questionID" type="number"><%= questions[i]._id %></p>
                 </div>
-                <div class="row" class="text-center" style="width: 100%; white-space:nowrap;">
-                  <p style="margin-left:15px"><strong>Vote This Question Up or Down:</strong></p>
-                </div>  
-                <div class="row" class="text-center" style="width: 100%; white-space: nowrap;"> 
-                  <button style = "display: inline-block; width: 20%; height: 50%; border-radius: 8px; background-color: grey; margin-left:20px" id="minus">-</button>
-                    <%=  relevance = questions[i].upvotes %>
-                    <p id = "score" class="text-center" style = "display: inline-block; text-align: centered; width: 50%; height: 40%;"> <%= relevance %> </p>
-                  <button style = "display: inline-block; width: 20%; height: 50%; border-radius: 8px; background-color: grey" id="plus">+</button>
-                </div>
-                <div class="row" >
-                  <button id="submitButton" style = "border-radius: 8px; margin-left: 20px; background-color:darkcyan; width: 200px; margin-bottom:15px" type="submit">View Responses</button>
-                </div>  
               </div>
-              <% } %>
-              <!-- Left and right controls/icons -->
-              <div class="row">
-                <button class="carousel-control-prev" type="button" data-bs-target="#demo" data-bs-slide="prev">
-                  <span class="carousel-control-prev-icon"></span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#demo" data-bs-slide="next">
-                  <span class="carousel-control-next-icon"></span>
-                </button>  
+              <% } %>          
+            <!-- Left and right controls/icons -->  
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#demo" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#demo" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+            </button>
+            <!-- Blank Row -->
+            <div class="row gx-4 gx-lg-5 justify-content-center"></div>
+            <!-- Upvote and Downvote Buttons -->
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+              <div class="text-center" style="width: 100%; white-space: nowrap;"> 
+                <button style = "display: inline-block; width: 20%; height: 50%; border-radius: 8px; background-color: grey; margin-left:20px" id="minus">-</button>
+                  <p id = "score" type="number" class="text-center" style = "display: inline-block; text-align: centered; width: 50%; height: 40%;"> <%= relevance %> </p>
+                <button style = "display: inline-block; width: 20%; height: 50%; border-radius: 8px; background-color: grey" id="plus">+</button>
               </div>
-            </div>  
-          </div>
+              <div class="row" >
+                <button id="submitButton" style = "border-radius: 8px; margin-left: 20px; background-color:darkcyan; width: 200px; margin-bottom:15px" type="submit">View Responses</button>
+              </div>
+            </div>              
+          </div>              
         </div>
       </div>
     </div>
-  </main>      
+  </main>  
+  
+  <script>
+//    $("p").hide();  // THIS IS TO HIDE THE QUESTION ID
+    var myBoolean = 0;
+    // var relevance = 0;
+    var relevanceStr = $('#score').text;
+    console.log("This is relevanceStr: " + relevanceStr)
+    var relevance = parseInt(relevanceStr, 10);
+    console.log("This is Relevance : " + relevance);
+    /*var thisQuestionId = $('message-body').value;*/
+    /*const Questions = require('../models/Question');*/
+    $(document).ready(function(){
+      console.log("Document is ready.");
+      $("#plus").click(function(){
+        if (myBoolean == 0) {
+          console.log("Inside Plus");
+          relevance++;
+         // myBoolean = 1;
+          /*Users.updateOne({ _id : thisQuestionId}, {$set : {upvotes: relevance}})*/
+       }
+        $("#score").text(relevance);
+      });
+  
+      $("#minus").click(function(){
+        if (myBoolean == 0) {
+          console.log("Inside Minus");
+          relevance--;    
+        //  myBoolean = 1;
+        /* Users.updateOne({ _id : thisQuestionId}, {$set : {upvotes: relevance}})*/
+        }
+        $("#score").text(relevance);
+      });
 
+      $("#submitButton").click(function() {
+        console.log("Inside Submit Button");
+        /*let data = {name: 'DelftStack'};
+        fetch("https://randomuser.me/api/?results=10", {
+        method: "POST", 
+        body: JSON.stringify(data)
+        }).then(res => {
+          console.log("Promise resolved", res);
+        }); */
+      });
+    });    
+  </script>
 
-
-        <!-- This is the Vertical Carousel -->
-<!--        <div class = "col-lg-8 col-md-10 mx-auto">  -->
-          <!-- Carousel https://getbootstrap.com/docs/5.1/components/carousel/ -->
-<!--          <div class="carousel-container justify-content-center"> -->
-            <!-- data-bs-interval: the amount of time to delay between automatically cycling an item. If false, carousel will not automatically cycle -->
-            <!-- data-bs wrap: whether the carousel should cycle continuously (i.e go from first to last and vice-versa) -->
-<!--            <div id="vertical-carousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="false" 
-              data-bs-wrap="false"> -->
-              <!-- Carousel slide indicators-->
-<!--              <ol class="carousel-indicators">
-                <li data-bs-target="#vertical-carousel" data-bs-slide-to="0" class="active"></li>
-                <li data-bs-target="#vertical-carousel" data-bs-slide-to="1"></li>
-                <li data-bs-target="#vertical-carousel" data-bs-slide-to="2"></li>
-                <li data-bs-target="#vertical-carousel" data-bs-slide-to="3"></li>
-              </ol> -->
-<!--              <div class="carousel-inner"> -->
-                <!-- Carousel item represents each slide -->
-<!--                <div class="carousel-item active">
-                  <div class="container">
-                    <div class="row align-items-center">
-                      <h2>
-                        Use Arrow Buttons to Scroll DOWN and UP
-                      </h2>
-                    </div>
-                  </div>
-                </div>
-
-                <%   
-                  var max = questions.length
-                  for (var i = 1; i < max; i++) {
-                %>
-                <div class="carousel-item" style="text-align: justify" >
-                  <div class="row" id = "message-body">
-                    <h2><%= questions[i].title %></h2>
-                    <p><%= questions[i].body %></p>
-                  </div>
-                  <div class="row">
-                    <p><strong>Posted by: </strong><%= questions[i].userid.username %> on <%= questions[i].datePosted.toDateString() %> </p>
-                  </div>
-                  <p style="margin-left:15px"><strong>Vote This Question Up or Down:</strong></p>
-                  <div class="row" class="text-center" style="width: 100%; white-space: nowrap;"> 
-                    <button style = "display: inline-block; width: 20%; height: 50%; border-radius: 8px; background-color: grey; margin-left:20px" id="minus">-</button>
-                    <%  relevance = questions[i].upvotes %>
-                    <p id = "score" class="text-center" style = "display: inline-block; text-align: centered; width: 50%; height: 40%;"> <%= relevance %> </p>
-                    <button style = "display: inline-block; width: 20%; height: 50%; border-radius: 8px; background-color: grey" id="plus">+</button>
-                  </div>
-                  <div class="row" >
-                    <button id="submitButton" style = "border-radius: 8px; margin-left: 20px; background-color:darkcyan; width: 200px; margin-bottom:15px" type="submit">View Responses</button>
-                  </div>
-                <% } %>
-              </div>
-            </div>
-            <button class="unclickable carousel-control-prev" type="button" data-bs-target="#vertical-carousel" data-bs-slide="prev">
-              <span class="clickable carousel-control-prev-icon" aria-hidden="true"></span>
-              <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="unclickable carousel-control-next" type="button" data-bs-target="#vertical-carousel" data-bs-slide="next">
-              <span class="clickable carousel-control-next-icon" aria-hidden="true"></span>
-              <span class="visually-hidden">Next</span>
-            </button>
-          </div>
-        </div> -->
-        <!-- jQuery -->
-<!--        <script src="https://code.jquery.com/jquery-3.6.0.min.js"
-          integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script> -->
-        <!-- Bootstrap JavaScript -->
-<!--        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
-          integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
-          crossorigin="anonymous"></script>
-        <script src="./controllers/carousel.js"></script>
-        <script type="text/javascript">
-
-        var _gaq = _gaq || [];
-        _gaq.push(['_setAccount', 'UA-36251023-1']);
-        _gaq.push(['_setDomainName', 'jqueryscript.net']);
-        _gaq.push(['_trackPageview']);
-
-        (function() {
-          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-        })();
-
-        </script>
-        <script>
-       /*   var myBoolean = 0;
-          var relevance = 0; //document.getElementById("score").value;
-          var thisQuestionId = document.getElementById("message-body").value;
-          const Questions = require('../models/Question');
-          $("#plus").click(function(){
-            console.log(myBoolean)
-            console.log(relevance)
-            if (myBoolean == 0) {
-            relevance++;
-            myBoolean = 1;
-            }
-            $("#score").text(relevance);
-          });
-          
-          $("#minus").click(function(){
-            console.log(myBoolean)
-            console.log(relevance)
-            if (myBoolean == 0) {
-              relevance--;    
-              myBoolean = 1;
-            }
-            $("#score").text(relevance);
-          });*/
-
-        </script>
-      -->
   <%- include('layouts/footer');-%>
 
   <%- include('layouts/scripts');-%>
