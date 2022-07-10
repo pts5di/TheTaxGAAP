@@ -1,6 +1,14 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema;
 
+const AnswerSchema = new Schema ({
+    respondentID: mongoose.Schema.Types.ObjectId,
+    respondent: String,
+    text: String,
+    date: Date,
+    upvotes: Number
+})
+
 const QuestionSchema = new Schema ({
     userid: {
         type: mongoose.Schema.Types.ObjectId,
@@ -20,11 +28,7 @@ const QuestionSchema = new Schema ({
         type: Date,
         default: new Date()
     },
-    answers: [{
-        respondent: String,
-        text: String,
-        upvotes: Number
-    }]
+    answers: [AnswerSchema]
 });
 
 const Question = mongoose.model('Question', QuestionSchema);

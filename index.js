@@ -3,12 +3,12 @@ const fs = require('fs')
 const express = require('express')
 const path = require('path')
 const mongoose = require('mongoose')
-
+     
 /*
 * Connect to the relevant MongoDB.
 */
 mongoose.connect('mongodb://127.0.0.1:27017/GregLimDB', {useNewUrlParser: true})
-
+                   
 /* 
 * Calls Express as a function to begin a new express app.
 * The second argument is a callback function that begins when
@@ -16,7 +16,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/GregLimDB', {useNewUrlParser: true})
 * is used for nodemon so that we can start afresh each time we save.
 */
 const app = new express()
-
+   
 /*
 *  EJS is our templating engine.
 */
@@ -53,7 +53,7 @@ app.get('/signup', (req,res) => {
 const validateMiddleware = require("./middleware/validationMiddleware")
 const authMiddleware = require('./middleware/authMiddleware');
 const redirectIfAuthenticatedMiddleware = require('./middleware/redirectIfAuthenticatedMiddleware')
-
+    
 /*
 *   Establish User Sessions
 */ 
@@ -61,35 +61,35 @@ const expressSession = require('express-session');
 app.use(expressSession ({
     secret: 'secret',
     resave:false,//added 
-    saveUninitialized: true //added   
+    saveUninitialized: true //added     
 }))
-
+              
 /*
 *   Flush the errors associated with a session
 *   after each req, res cycle.  See also controllers/storeUser.js
 */
 const flash = require('connect-flash');
 app.use(flash());
-
-/*
+                      
+/*    
 *   Conditionally Display New Post, Login and New User
 */ 
 global.loggedIn = null;
-   
+      
 app.use("*", (req, res, next) => {
     loggedIn = req.session.userId;
     next()
-});
+});   
 const homeController = require('./controllers/home')
 app.get('/', homeController)
-
+              
 /*
 *   Handle MyProfile
 */
 const myProfileController = require("./controllers/myProfile");
 app.get('/myProfile', myProfileController)
-
-/*
+     
+/*   
 *   Handle Research
 */
 app.get('/research', (req,res) => {
@@ -104,7 +104,7 @@ const newPostController = require('./controllers/newPost')
 app.get('/posts/new', /*authMiddleware,*/ newPostController)
 const storePostController = require('./controllers/storePost')
 app.post('/posts/store', /*authMiddleware, */ storePostController)
-
+              
 /*
 * Handle Research Request
 */
@@ -113,10 +113,31 @@ app.get('/research', researchController)
 const displaySearchResultsController = require('./controllers/displayPosts')
 app.post('/display/results', displaySearchResultsController)
 
-//const getPostController = require('./controllers/getPost')
-//app.get('/posts/:id', getPostController)
+/*
+* Display Answers
+*/
+const answerController = require('./controllers/displayAnswers')
+app.post('/display/answers', answerController)
 
-
+/*
+* Draft a New Answer
+*/
+const newAnswerController = require('./controllers/newAnswer')
+app.post('/draft/answer', newAnswerController)
+       
+/*
+* Store a New Answer
+*/
+const storeAnswerController = require('./controllers/storeAnswer')
+app.post('/answers/store', storeAnswerController)
+      
+/*    
+* Handle Voting
+*/
+const voteController = require('./controllers/vote')
+console.log("Before /vote route")
+app.post('/vote', voteController)
+     
 /*
 *   Register New User
 */
@@ -125,7 +146,7 @@ const storeUserController = require('./controllers/storeUser')
 
 app.get('/auth/register', newUserController)
 app.post('/users/register', storeUserController)
-
+           
 /*
 *   Login Existing User
 */
@@ -142,5 +163,5 @@ app.get('/auth/logout', logoutController)
 
 /*
 *   Handle page not found
-*/
+*/   
 app.use((req,res) => res.render('notfound'));

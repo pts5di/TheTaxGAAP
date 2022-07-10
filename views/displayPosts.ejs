@@ -30,50 +30,57 @@
       <div class="row gx-4 gx-lg-5 justify-content-center">
         <div class="col-md-10 col-lg-8 col-xl-7">
             <!-- Carousel -->
-            <div id="demo" class="carousel slide" data-bs-ride="carousel">
-      
+            <!-- data-bs-ride="carousel" excluded -->
+            <div id="demo" class="carousel slide"  data-bs-interval="false">     
               <!-- The slideshow/carousel -->
               <div class="carousel-inner">
                 <div class="carousel-item active">
                   <div class="row" id = "message-body">
-                    <h1>Use Left and Right Arrows to Scroll</h1>
+                    <% if (questions.length > 0) { %>
+                    <h2 style="text-align: center">Use Left and Right Arrows </h2>
+                    <h2 style="text-align: center">to Scroll</h2>
+                    <h2 style="text-align: center">Through Questions</h2>
+                    <% } else { %>
+                      <h2 style="text-align: center">No Results</h2>
+                      <h2 style="text-align: center">Post Your Own Question</h2>
+                    <% } %>  
                   </div>
                 </div>
                 <%   
                 var max = questions.length
                 for (var i = 0; i < max; i++) {
-                  relevance = questions[i].upvotes
                 %>
               <div class="carousel-item" style="text-align: justify" >
                 <div class="row" id = "message-body">
                   <h2><%= questions[i].title %></h2>
                   <p><%= questions[i].body %></p>
                 </div>
-                <div class="row">
+                <div class="row" id="parent-node">
                   <p><strong>Posted by: </strong><%= questions[i].userid.username %> on <%= questions[i].datePosted.toDateString() %> </p>
-                  <p id="questionID" type="number"><%= questions[i]._id %></p>
+                  <p id="score"><strong>Relevance: </strong><%= questions[i].upvotes %></p>
+                  <p hidden id="questionID" type="number"><%= questions[i]._id %></p>
                 </div>
               </div>
               <% } %>          
             <!-- Left and right controls/icons -->  
             </div>
             <button class="carousel-control-prev" type="button" data-bs-target="#demo" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon"></span>
+            <span class="carousel-control-prev-icon" id="prevIcon"></span>
             </button>
             <button class="carousel-control-next" type="button" data-bs-target="#demo" data-bs-slide="next">
-            <span class="carousel-control-next-icon"></span>
+            <span class="carousel-control-next-icon" id="nextIcon"></span>
             </button>
             <!-- Blank Row -->
             <div class="row gx-4 gx-lg-5 justify-content-center"></div>
             <!-- Upvote and Downvote Buttons -->
             <div class="row gx-4 gx-lg-5 justify-content-center">
               <div class="text-center" style="width: 100%; white-space: nowrap;"> 
-                <button style = "display: inline-block; width: 20%; height: 50%; border-radius: 8px; background-color: grey; margin-left:20px" id="minus">-</button>
-                  <p id = "score" type="number" class="text-center" style = "display: inline-block; text-align: centered; width: 50%; height: 40%;"> <%= relevance %> </p>
-                <button style = "display: inline-block; width: 20%; height: 50%; border-radius: 8px; background-color: grey" id="plus">+</button>
-              </div>
-              <div class="row" >
-                <button id="submitButton" style = "border-radius: 8px; margin-left: 20px; background-color:darkcyan; width: 200px; margin-bottom:15px" type="submit">View Responses</button>
+                <button style = "display: inline-block; width: 20%; border:2px solid black; border-radius: 10px; background-color: none; margin-left:10px" id="minus"><i class="fas fa-thumbs-down"></i></button>                
+                <button style = "display: inline-block; width: 20%; border-radius: 10px; border:2px solid black; background-color: none; margin-right:10px" id="plus"><i class="fas fa-thumbs-up"></i></button>
+                <form action="/display/answers" method="POST">
+                  <p></p>
+                  <button id="submitButton" name="questionID" value="0" style = "border-radius: 8px; margin-left: 10px; margin-right: 10px; background-color:darkcyan; width: 50%; border:2px solid black; margin-bottom:15px" type="submit">View Answers</button>
+                </form>
               </div>
             </div>              
           </div>              
@@ -81,49 +88,110 @@
       </div>
     </div>
   </main>  
-  
+    
   <script>
-//    $("p").hide();  // THIS IS TO HIDE THE QUESTION ID
-    var myBoolean = 0;
-    // var relevance = 0;
-    var relevanceStr = $('#score').text;
-    console.log("This is relevanceStr: " + relevanceStr)
-    var relevance = parseInt(relevanceStr, 10);
-    console.log("This is Relevance : " + relevance);
-    /*var thisQuestionId = $('message-body').value;*/
-    /*const Questions = require('../models/Question');*/
     $(document).ready(function(){
-      console.log("Document is ready.");
-      $("#plus").click(function(){
-        if (myBoolean == 0) {
-          console.log("Inside Plus");
-          relevance++;
-         // myBoolean = 1;
-          /*Users.updateOne({ _id : thisQuestionId}, {$set : {upvotes: relevance}})*/
-       }
-        $("#score").text(relevance);
-      });
-  
-      $("#minus").click(function(){
-        if (myBoolean == 0) {
-          console.log("Inside Minus");
-          relevance--;    
-        //  myBoolean = 1;
-        /* Users.updateOne({ _id : thisQuestionId}, {$set : {upvotes: relevance}})*/
-        }
-        $("#score").text(relevance);
+    
+      /*
+      * Keep Track of the Carousel Index Position
+      * and Relevant DOM Elements
+      */
+      var index = 0;
+      const parent_nodes = document.querySelectorAll("#questionID");
+      const num_parent_nodes = parent_nodes.length;
+      const score_nodes = document.querySelectorAll("#score");
+
+      console.log(index)
+      console.log(num_parent_nodes)
+
+      $("#prevIcon").click(function() {
+
+          if (index == 0) {
+            index = num_parent_nodes; 
+          } else {  
+            index--;
+          }
+          console.log("INDEX: " + index)
+
       });
 
-      $("#submitButton").click(function() {
-        console.log("Inside Submit Button");
-        /*let data = {name: 'DelftStack'};
-        fetch("https://randomuser.me/api/?results=10", {
-        method: "POST", 
-        body: JSON.stringify(data)
-        }).then(res => {
-          console.log("Promise resolved", res);
-        }); */
+      $("#nextIcon").click(function() {
+
+        if (index == num_parent_nodes) {
+          index = 0;
+        } else {
+          index++;
+        }
+
+        console.log("INDEX: " + index)
+
       });
+      
+      // Handle Upvote
+      $("#plus").click(function(){
+        console.log("Inside Plus when index is: " + index);
+
+        if (index != 0) {
+          var postid = parent_nodes.item(index-1).innerHTML
+          var stringPostID = JSON.stringify(postid).replace("ID: ", "").trim();
+          stringPostID = stringPostID.replace('"', '');
+          stringPostID = stringPostID.replace('"', '');
+          console.log("stringPostID: " + stringPostID);
+
+          $.ajax({
+            type: "post",
+            url: "/vote",
+            datatype: "json",
+            data: {"questionID" : stringPostID, "action" : "upvoteQuestion"},
+            success: function(result) {
+              console.log("Result: " + JSON.stringify(result))
+              console.log("result.revisedScore: " + result.revisedScore);
+              score_nodes.item(index-1).innerHTML = "<strong>Relevance: </strong>" + result.revisedScore;
+              alert("Your upvote has been recorded!");
+            }
+          })
+        }
+      });
+  
+      // Handle Downvote
+      $("#minus").click(function(event){
+        console.log("Inside Minus when index is: " + index);
+
+        if (index != 0) {
+          var postid = parent_nodes.item(index-1).innerHTML
+          var stringPostID = JSON.stringify(postid).replace("ID: ", "").trim();
+          stringPostID = stringPostID.replace('"', '')
+          stringPostID = stringPostID.replace('"', '')
+          console.log("This is Stringify PostID: " + stringPostID)
+          
+          $.ajax({
+            type: "post",
+            url: "/vote",
+            datatype: "json",
+            data: {"questionID" : stringPostID, "action" : "downvoteQuestion"},
+            success: function(result) {
+              console.log("Result: " + JSON.stringify(result))
+              score_nodes.item(index-1).innerHTML = "<strong>Relevance: </strong>" + result.revisedScore;
+              alert("Your downvote has been recorded!");
+            },
+            error: function(xhr, status, error) {
+              var err = eval("(" + xhr.responseText + ")");
+              alert(err.Message);
+            }
+          })
+        }
+      });
+
+      document.getElementById('submitButton').onclick = function() {
+        if (index != 0) {
+          var postid = parent_nodes.item(index-1).innerHTML
+          var stringPostID = JSON.stringify(postid).replace("ID: ", "").trim();
+          stringPostID = stringPostID.replace('"', '')
+          stringPostID = stringPostID.replace('"', '')
+          this.value = stringPostID;
+        }
+      }
+
     });    
   </script>
 

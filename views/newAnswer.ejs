@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%- include('layouts/header'); -%>
+    <body>
+        <!-- Navigation-->
+        <%- include('layouts/navbar'); -%>
+        <!-- Page Header-->
+        <header class="masthead" style="background-image: url('/assets/img/QandA.jpg')">
+            <div class="container position-relative px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5 justify-content-center">
+                    <div class="col-md-10 col-lg-8 col-xl-7">
+                        <div class="page-heading">
+                            <span class="subheading"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <!-- Main Content-->
+        <main class="mb-4">
+            <div class="container px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5 justify-content-center">
+                    <div class="col-md-10 col-lg-8 col-xl-7">
+                        <div class="my-5">
+                            <!-- * * * * * * * * * * * * * * *-->
+                            <!-- * * SB Forms Contact Form * *-->
+                            <!-- * * * * * * * * * * * * * * *-->
+                            <form name="answerForm" onsubmit = "submitForm();" action="/answers/store" method="POST">
+                                <div class="form-floating">
+                                    <label>Your Answer</label>
+                                    <textarea id="body" class="form-control"  placeholder="Enter your answer here..." style="height: 12rem" data-sb-validations="required" name="body"></textarea>
+                                    <input type="hidden" name="thisQuestionID" value = "">
+                                    <div hidden id="questionID"><%= thisQuestionID %></div>
+                                    <script>
+                                        $(document).ready(function() {
+                                            $('#body').summernote();
+                                        });
+                                    </script> 
+                                    <div class="invalid-feedback" data-sb-feedback="message:required">An answer is required.</div>
+                                </div>
+                                <br />
+                                <!-- This is what your users will see when there is-->
+                                <!-- an error submitting the form-->
+                                <div class="d-none" id="submitErrorMessage"><div class="text-center text-danger mb-3">Error sending message!</div></div>
+                                <!-- Submit Button-->
+                                <button class="btn btn-primary text-uppercase" id="submitButton" type="submit">Post</button>
+                            </form>
+                            <script>
+                                function submitForm() {
+                                    console.log("New Answer.ejs Posts to storeAnswer.js: " + document.getElementById("questionID").innerHTML)
+                                    document.answerForm.thisQuestionID.value = document.getElementById("questionID").innerHTML;
+                                }
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <!-- Footer-->
+        <%- include('layouts/footer'); -%>
+        <!-- Scripts-->
+        <%- include('layouts/scripts'); -%>
+    </body>
+</html>
