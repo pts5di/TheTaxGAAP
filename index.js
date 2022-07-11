@@ -46,7 +46,7 @@ app.listen(4000, () => {
 app.get('/signup', (req,res) => {
    res.render('signup');
 })
-
+   
 /*
 *   Import Validation Middleware
 */
