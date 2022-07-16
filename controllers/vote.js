@@ -38,10 +38,40 @@ module.exports = async (req, res) => {
         askedScore = relevantUser.askedscore;
         askedScore--;
         await Users.updateOne({ _id : relevantUser }, {$set : {askedscore : askedScore}})
-    }
 
+        // Notify the Individual Who Posted the Question
+        console.log("Start to notify poster")
+        const userWhoPostedQuestion = await Users.findOne({_id : relevantUserID})
+        console.log("found userWhoPostedQuestion")
+        const user_email = userWhoPostedQuestion.email
+        var nodemailer = require('nodemailer');
+
+        var transporter = nodemailer.createTransport({
+            service: 'Outlook365',
+            auth: {
+                user: 'admin',
+                pass: 'Kerensky312'
+            }
+        });
+
+        var mailOptions = {
+            from: 'admin@thetaxgaap.com',
+            to: user_email,
+            subject: 'TheTaxGaap : Someone Downvoted Your Question.',
+            text: 'You should check the site at www.thetaxgaap.com.  ' + relevantUser.username + ' just downvited your question.  This is their rationale. ' + req.body.rationale
+        };
+
+        transporter.sendMail(mailOptions, function(error, info){
+            if (error) {
+                console.log(error);
+            } else {
+                console.log('Email sent: ' + info.response);
+            }
+        });
+    }
+    
+    // Upvote Answer
     if (req.body.action == "upvoteAnswer") {
-        // Upvote Answer
         console.log("Inside upvoteAnswer")
         const thisQuestion = await Questions.findById(req.body.questionID);
         console.log("After thisQuestion")
@@ -70,9 +100,8 @@ module.exports = async (req, res) => {
         await Users.updateOne({ _id : respondentID}, {$set : {answerscore : currentAnswerScore, rank : respondentRank}});
     }
 
+    // Downvote Answer
     if (req.body.action == "downvoteAnswer") {
-
-        // Downvote Answer
         console.log("Inside downvoteAnswer")
         const thisQuestion = await Questions.findById(req.body.questionID);
         console.log("After thisQuestion")
@@ -98,6 +127,35 @@ module.exports = async (req, res) => {
         var respondentRank = thisRespondent.rank;
         respondentRank--;
         await Users.updateOne({ _id : respondentID}, {$set : {answerscore : currentAnswerScore, rank : respondentRank}});
+
+        // Notify the Individual Who Posted the Answer
+        console.log("Start to notify respondent")
+        const user_email = thisRespondent.email
+        var nodemailer = require('nodemailer');
+
+        var transporter = nodemailer.createTransport({
+            service: 'Outlook365',
+            auth: {
+                user: 'admin',
+                pass: 'Kerensky312'
+            }
+        });
+
+        var mailOptions = {
+            from: 'admin@thetaxgaap.com',
+            to: user_email,
+            subject: 'TheTaxGaap : Someone Downvoted Your Answer',
+            text: 'You should check the site at www.thetaxgaap.com.  ' + thisRespondent.username + ' just downvited your question.  This is their rationale. ' + req.body.rationale
+        };
+
+        transporter.sendMail(mailOptions, function(error, info){
+            if (error) {
+                console.log(error);
+            } else {
+                console.log('Email sent: ' + info.response);
+            }
+        });
+
     }
 
 

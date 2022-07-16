@@ -55,7 +55,7 @@
               <div class="carousel-item" style="text-align: justify" >
                 <div class="row" id = "message-body">
                   <h2>Answer:</h2>
-                  <p><%= answers[i].text %></p>
+                  <p hidden id="answer_text"><%= answers[i].text %></p>
                 </div>
                 <div class="row" id="parent-node">
                   <p><strong>Posted by: </strong><%= answers[i].respondent %> on <%= answers[i].date.toDateString() %> </p>
@@ -76,13 +76,12 @@
             <!-- Upvote and Downvote Buttons -->
             <div class="row gx-4 gx-lg-5 justify-content-center">
               <div class="text-center" style="width: 100%; white-space: nowrap;">                 
-                <button style = "display: inline-block; width: 20%; border:2px solid black; border-radius: 10px; background-color: none; margin-left:10px" id="minus"><i class="fas fa-thumbs-down"></i></button>   
-                <button style = "display: inline-block; width: 20%; border-radius: 10px; border:2px solid black; background-color: none; margin-right:10px" id="plus"><i class="fas fa-thumbs-up"></i></button>
-                <form onsubmit="submitForm();" name="answerForm" action="/draft/answer" method="POST">
-                 <p></p>
-                 <input type="hidden" name="thisQuestionID" value = "">
-                 <button id="submitButton" value = "0" style = "border-radius: 8px; margin-left: 10px; margin-right: 10px; background-color:darkcyan; width: 50%; border:2px solid black; margin-bottom:15px" type="submit">Answer</button> 
+                <button style = "display: inline-block; width: 11%; border:2px solid black; border-radius: 10px; background-color: none; margin-left:10px" id="minus"><i class="fas fa-thumbs-down"></i></button>   
+                <form onsubmit="submitForm();" style = "display: inline-block" name="answerForm" action="/draft/answer" method="POST">
+                 <input type="hidden" name="thisQuestionID"  value = "" >
+                 <button id="submitButton" value = "0" style = "border-radius: 8px; margin-left: 10px; margin-right: 10px; background-color:darkcyan; width: 78%; border:2px solid black; margin-bottom:15px" type="submit">Answer</button> 
                 </form>
+                <button style = "display: inline-block; width: 11%; border-radius: 10px; border:2px solid black; background-color: none; margin-right:10px" id="plus"><i class="fas fa-thumbs-up"></i></button>
               </div>
             </div>              
           </div>              
@@ -93,10 +92,35 @@
     
   <script>
 
-    
+    function explainDownvote () {
+      let userRationale = prompt("Please provide a cogent explanation for your downvote.  This will be communicated to the person who posted.", "Insufficient facts were given to allow others to respond.");
+      return userRationale; 
+    }
+
+    function hideButtons (position) {
+      /*
+      * Hide the voting buttons on index == 0
+      */
+      var upvoteButton = document.getElementById('minus');
+      var downvoteButton = document.getElementById('plus');
+      var submitButton = document.getElementById('submitButton');
+      if (position == 0) {
+        console.log("Rendering hidden")
+        upvoteButton.style.visibility = "hidden";
+        downvoteButton.style.visibility = "hidden";
+        submitButton.style.visibility = "hidden";
+      } else {
+        console.log("Rendering Visible")
+        upvoteButton.style.visibility = "visible";
+        downvoteButton.style.visibility = "visible";
+        submitButton.style.visibility = "visible";
+      }
+    } 
 
     $(document).ready(function(){
-    
+      var index = 0;
+      hideButtons(index);  
+
       console.log("You are inside the displayAnswers VIEW!")
       console.log("JS Believes QID is: " + document.getElementById("questionID").innerHTML);
       
@@ -104,32 +128,35 @@
       * Keep Track of the Carousel Index Position
       * and Relevant DOM Elements
       */
-      var index = 0;
-      const parent_nodes = document.querySelectorAll("#questionID");
+      const parent_nodes = document.querySelectorAll("#answer_text");
       const num_parent_nodes = parent_nodes.length;
+      console.log("Num Parent Nodes: " + num_parent_nodes)
       const score_nodes = document.querySelectorAll("#score");
 
       $("#prevIcon").click(function() {
 
-          if (index == 0) {
-            index = num_parent_nodes+1; 
-          }  
-          index--;
-          console.log("INDEX: " + index)
+        if (index == 0) {
+          index = num_parent_nodes; 
+        } else {
+          index = index - 1;
+        } 
+
+        console.log("Index fed to hide function: " + index + " num_parent_nodes: " + num_parent_nodes)
+        hideButtons(index)  
 
       });
 
       $("#nextIcon").click(function() {
 
         if (index == num_parent_nodes) {
-          index = -1;
+          index = 0;
+        } else {
+          index = index + 1;
         }
-
-        index++;
-        console.log("INDEX: " + index)
-
+        console.log("Index fed to hide function: " + index + " num_parent_nodes: " + num_parent_nodes)
+        hideButtons(index)  
       });
-  
+         
       /* Handle Upvote*/
       $("#plus").click(function(){
         console.log("Inside Plus");
@@ -161,6 +188,8 @@
       $("#minus").click(function(){
         console.log("Inside Minus");
 
+        var rationale = explainDownvote();
+
         var postid = parent_nodes.item(index-1).innerHTML
         var stringPostID = JSON.stringify(postid).replace("ID: ", "").trim();
         stringPostID = stringPostID.replace('"', '')
@@ -171,7 +200,7 @@
           type: "post",
           url: "/vote",
           datatype: "json",
-          data: {"questionID" : stringPostID, "action" : "downvoteAnswer"},
+          data: {"questionID" : stringPostID, "action" : "downvoteAnswer", "rationale" : rationale},
           success: function(result) {
             console.log("Result: " + JSON.stringify(result))
             score_nodes.item(index-1).innerHTML = "<strong>Score: </strong>" + result.revisedScore;
