@@ -40,9 +40,11 @@
                     <h2 style="text-align: center">Use Left and Right Arrows </h2>
                     <h2 style="text-align: center">to Scroll</h2>
                     <h2 style="text-align: center">Through Questions</h2>
+                    <p hidden id="questionID" type="number">0</p>
                     <% } else { %>
                       <h2 style="text-align: center">No Results</h2>
                       <h2 style="text-align: center">Post Your Own Question</h2>
+                      <p hidden id="questionID" type="number">0</p>
                     <% } %>  
                   </div>
                 </div>
@@ -89,20 +91,18 @@
   </main>  
     
   <script>
-      
+    var upvoteButton = document.getElementById('minus');
+    var downvoteButton = document.getElementById('plus');
+    var submitButton = document.getElementById('submitButton');
+
     function explainDownvote () {
       let userRationale = prompt("Please provide a cogent explanation for your downvote.  This will be communicated to the person who posted.", "Insufficient facts were given to allow others to respond.");
       return userRationale; 
     }
 
-
-    var upvoteButton = document.getElementById('minus');
-    var downvoteButton = document.getElementById('plus');
-    var submitButton = document.getElementById('submitButton');
-
     /*
-      * Hide the voting buttons on index == 0
-      */
+    * Hide the voting buttons on index == 0
+    */
     function hideButtons (position) {
       var upvoteButton = document.getElementById('minus');
       var downvoteButton = document.getElementById('plus');
@@ -122,56 +122,43 @@
 
     $(document).ready(function(){
 
-      var index = 0;
-
       /*
       *  Hide the Buttons on Initial Display
       */ 
-      hideButtons (index)
+      hideButtons (0)
       
+      /*
+      * Figure Out What to Hide When Carousel Slides
+      * Execute hideButtons Function On Completion
+      */
+      $("#demo").on('slid.bs.carousel', function() {
+        console.log($(".carousel-item.active #questionID")[0].innerHTML)
+        hideButtons($(".carousel-item.active #questionID")[0].innerHTML)
+      });
+
       /*
       * Keep Track of the Carousel Index Position
       * and Relevant DOM Elements
       */
-      const parent_nodes = document.querySelectorAll("#questionID");
-      const num_parent_nodes = parent_nodes.length;
+      const num_parent_nodes = $(".carousel-item").length
       const score_nodes = document.querySelectorAll("#score");
 
-      console.log("Index and num_parent_elements: " + index + " " + num_parent_nodes)
-
       $("#prevIcon").click(function() {
-        if (index == 0) {
-          index = num_parent_nodes;
-          console.log("Index and num_parent_nodes : " + index + " " + num_parent_nodes) 
-        } else { 
-          index--;     
-          console.log("Index and num_parent_nodes : " + index + " " + num_parent_nodes)
-        }
-        hideButtons(index)
+        // Empty For Now
       });
 
       $("#nextIcon").click(function() {
-
-        if (index == num_parent_nodes) {
-          index = 0;
-          console.log("Index and num_parent_nodes : " + index + " " + num_parent_nodes); 
-        } else {
-          index++;    
-          console.log("Index and num_parent_nodes : " + index + " " + num_parent_nodes);
-        }
-        hideButtons(index)          
+        // Empty For Now
       });
       
       // Handle Upvote
-      $("#plus").click(function(){
-        console.log("Inside Plus when index is: " + index);
-
-        if (index != 0) {
-          var postid = parent_nodes.item(index-1).innerHTML
-          var stringPostID = JSON.stringify(postid).replace("ID: ", "").trim();
-          stringPostID = stringPostID.replace('"', '');
-          stringPostID = stringPostID.replace('"', '');
+      $("#plus").click(function(){          
+          // Find the questionID for the active carousel item
+          var stringPostID = $(".carousel-item.active #questionID")[0].innerHTML
           console.log("stringPostID: " + stringPostID);
+          
+          // Find the score_node element associated with the active item
+          var score_node = $(".carousel-item.active #score")[0]
 
           $.ajax({
             type: "post",
@@ -181,53 +168,45 @@
             success: function(result) {
               console.log("Result: " + JSON.stringify(result))
               console.log("result.revisedScore: " + result.revisedScore);
-              score_nodes.item(index-1).innerHTML = "<strong>Relevance: </strong>" + result.revisedScore;
+              score_node.innerHTML = "<strong>Relevance: </strong>" + result.revisedScore;
               alert("Your upvote has been recorded!");
             }
           })
         }
-      });
+      );
   
       // Handle Downvote
       $("#minus").click(function(event){
-        console.log("Inside Minus when index is: " + index);
-
-        if (index != 0) {
           
-          var rationale = explainDownvote();
+        var rationale = explainDownvote();
+        
+        // Find the questionID for the active carousel item
+        var stringPostID = $(".carousel-item.active #questionID")[0].innerHTML
+        console.log("stringPostID: " + stringPostID);
           
-          var postid = parent_nodes.item(index-1).innerHTML
-          var stringPostID = JSON.stringify(postid).replace("ID: ", "").trim();
-          stringPostID = stringPostID.replace('"', '')
-          stringPostID = stringPostID.replace('"', '')
-          console.log("This is Stringify PostID: " + stringPostID)
-          
-          $.ajax({
-            type: "post",
-            url: "/vote",
-            datatype: "json",
-            data: {"questionID" : stringPostID, "action" : "downvoteQuestion", "rationale" : rationale},
-            success: function(result) {
-              console.log("Result: " + JSON.stringify(result))
-              score_nodes.item(index-1).innerHTML = "<strong>Relevance: </strong>" + result.revisedScore;
-              alert("Your downvote has been recorded!");
-            },
-            error: function(xhr, status, error) {
-              var err = eval("(" + xhr.responseText + ")");
-              alert(err.Message);
-            }
-          })
+        // Find the score_node element associated with the active item
+        var score_node = $(".carousel-item.active #score")[0]
+        
+        $.ajax({
+          type: "post",
+          url: "/vote",
+          datatype: "json",
+          data: {"questionID" : stringPostID, "action" : "downvoteQuestion", "rationale" : rationale},
+          success: function(result) {
+            console.log("Result: " + JSON.stringify(result))
+            score_node.innerHTML = "<strong>Relevance: </strong>" + result.revisedScore;
+            alert("Your downvote has been recorded!");
+          },
+          error: function(xhr, status, error) {
+            var err = eval("(" + xhr.responseText + ")");
+            alert(err.Message);
+          }
+        })
         }
-      });
+      );
 
       document.getElementById('submitButton').onclick = function() {
-        if (index != 0) {
-          var postid = parent_nodes.item(index-1).innerHTML
-          var stringPostID = JSON.stringify(postid).replace("ID: ", "").trim();
-          stringPostID = stringPostID.replace('"', '')
-          stringPostID = stringPostID.replace('"', '')
-          this.value = stringPostID;
-        }
+        this.value = $(".carousel-item.active #questionID")[0].innerHTML;
       }
 
     });    

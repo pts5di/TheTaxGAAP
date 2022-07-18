@@ -41,9 +41,11 @@
                     <h2 style="text-align: center">Upvote/Downvote an Answer</h2>
                     <h2 style="text-align: center">OR</h2>
                     <h2 style="text-align: center">Click Answer To Add Your Own</h2>
+                    <p hidden id="answerIndex" type="number">-1</p>
                     <% } else { %>
                     <h2 style="text-align: center">No Answers Yet</h2>
                     <h2 style="text-align: center">Click Answer To Add Your Own</h2>
+                    <p hidden id="answerIndex" type="number">-1</p>
                     <% } %>  
                   </div>
                 </div>
@@ -55,11 +57,12 @@
               <div class="carousel-item" style="text-align: justify" >
                 <div class="row" id = "message-body">
                   <h2>Answer:</h2>
-                  <p hidden id="answer_text"><%= answers[i].text %></p>
+                  <p id="answer_text"><%= answers[i].text %></p>
                 </div>
                 <div class="row" id="parent-node">
                   <p><strong>Posted by: </strong><%= answers[i].respondent %> on <%= answers[i].date.toDateString() %> </p>
                   <p id="score"><strong>Relevance: </strong><%= answers[i].upvotes %></p>
+                  <p hidden id="answerIndex" type="number"><%= i %></p>
                 </div>
               </div>
               <% } %>
@@ -97,29 +100,40 @@
       return userRationale; 
     }
 
+    /*
+    * Hide / Reveal Voting Buttons
+    */
     function hideButtons (position) {
-      /*
-      * Hide the voting buttons on index == 0
-      */
       var upvoteButton = document.getElementById('minus');
       var downvoteButton = document.getElementById('plus');
       var submitButton = document.getElementById('submitButton');
-      if (position == 0) {
+      if (position == -1) {
         console.log("Rendering hidden")
         upvoteButton.style.visibility = "hidden";
         downvoteButton.style.visibility = "hidden";
-        submitButton.style.visibility = "hidden";
       } else {
         console.log("Rendering Visible")
         upvoteButton.style.visibility = "visible";
-        downvoteButton.style.visibility = "visible";
         submitButton.style.visibility = "visible";
+        downvoteButton.style.visibility = "visible";
       }
-    } 
+    }   
 
     $(document).ready(function(){
-      var index = 0;
-      hideButtons(index);  
+        
+      /*
+      *  Hide the Buttons on Initial Display
+      */ 
+      hideButtons (-1)
+      
+      /*
+      * Figure Out What to Hide When Carousel Slides
+      * Execute hideButtons Function On Completion
+      */
+      $("#demo").on('slid.bs.carousel', function() {
+        console.log($(".carousel-item.active #answerIndex")[0].innerHTML)
+        hideButtons($(".carousel-item.active #answerIndex")[0].innerHTML)
+      });
 
       console.log("You are inside the displayAnswers VIEW!")
       console.log("JS Believes QID is: " + document.getElementById("questionID").innerHTML);
@@ -128,47 +142,32 @@
       * Keep Track of the Carousel Index Position
       * and Relevant DOM Elements
       */
-      const parent_nodes = document.querySelectorAll("#answer_text");
-      const num_parent_nodes = parent_nodes.length;
-      console.log("Num Parent Nodes: " + num_parent_nodes)
-      const score_nodes = document.querySelectorAll("#score");
-
       $("#prevIcon").click(function() {
 
-        if (index == 0) {
-          index = num_parent_nodes; 
-        } else {
-          index = index - 1;
-        } 
-
-        console.log("Index fed to hide function: " + index + " num_parent_nodes: " + num_parent_nodes)
-        hideButtons(index)  
+        // Leave Blank For Now
 
       });
 
       $("#nextIcon").click(function() {
 
-        if (index == num_parent_nodes) {
-          index = 0;
-        } else {
-          index = index + 1;
-        }
-        console.log("Index fed to hide function: " + index + " num_parent_nodes: " + num_parent_nodes)
-        hideButtons(index)  
+        // Leave Blank For Now
+
       });
          
       /* Handle Upvote*/
       $("#plus").click(function(){
         console.log("Inside Plus");
 
-        console.log("This ID: " + parent_nodes.item(index-1).innerHTML);
+        // Find the questionID for the active carousel item
+        var stringPostID = document.getElementById("questionID").innerHTML
+        stringPostID = stringPostID.replace(" ", "");
+        console.log("stringPostID: " + stringPostID);
+          
+        // Find the score_node element associated with the active item
+        var score_node = $(".carousel-item.active #score")[0]
 
-        var postid = parent_nodes.item(index-1).innerHTML
-        var stringPostID = JSON.stringify(postid).replace("ID: ", "").trim();
-        stringPostID = stringPostID.replace('"', '')
-        stringPostID = stringPostID.replace('"', '')
-      
-        mongoIndex = index - 1; // The mongo array starts at [0] which equates to index = 1
+        // Find the active answer index modified to account for shift due to initial slide
+        var mongoIndex = $(".carousel-item.active #answerIndex")[0].innerHTML
 
         $.ajax({
           type: "post",
@@ -178,7 +177,7 @@
           success: function(result) {
             console.log("Result: " + JSON.stringify(result))
             console.log("result.revisedScore: " + result.revisedScore);
-            score_nodes.item(index-1).innerHTML = "<strong>Score: </strong>" + result.revisedScore;
+            score_node.innerHTML = "<strong>Score: </strong>" + result.revisedScore;
             alert("Your vote has been recorded!");
           }
         })
@@ -190,25 +189,32 @@
 
         var rationale = explainDownvote();
 
-        var postid = parent_nodes.item(index-1).innerHTML
+        // Find the questionID for the active carousel item
+        var stringPostID = document.getElementById("questionID").innerHTML
+        stringPostID = stringPostID.replace(" ", "");
+        console.log("stringPostID: " + stringPostID);
+
+        /*
         var stringPostID = JSON.stringify(postid).replace("ID: ", "").trim();
         stringPostID = stringPostID.replace('"', '')
         stringPostID = stringPostID.replace('"', '')
-        console.log("This is Stringify PostID: " + stringPostID)
+        */
+          
+        // Find the score_node element associated with the active item
+        var score_node = $(".carousel-item.active #score")[0]
+
+        // Find the active answer index modified to account for shift due to initial slide
+        var mongoIndex = $(".carousel-item.active #answerIndex")[0].innerHTML
 
         $.ajax({
           type: "post",
           url: "/vote",
           datatype: "json",
-          data: {"questionID" : stringPostID, "action" : "downvoteAnswer", "rationale" : rationale},
+          data: {"questionID" : stringPostID, "index" : mongoIndex, "rationale" : rationale, "action" : "downvoteAnswer"},
           success: function(result) {
             console.log("Result: " + JSON.stringify(result))
-            score_nodes.item(index-1).innerHTML = "<strong>Score: </strong>" + result.revisedScore;
+            score_node.innerHTML = "<strong>Score: </strong>" + result.revisedScore;
             alert("Your vote has been recorded!");
-          },
-          error: function(xhr, status, error) {
-            var err = eval("(" + xhr.responseText + ")");
-            alert(err.Message);
           }
         })
       });

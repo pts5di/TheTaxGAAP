@@ -22,7 +22,7 @@ const app = new express()
 */
 const ejs = require('ejs')
 app.set('view engine', 'ejs')
-         
+             
 /*   
 *   Body Parser Middleware used to read body of POSTs.
 *   You can access with req.body.title or req.body.message etc.
@@ -30,7 +30,7 @@ app.set('view engine', 'ejs')
 const bodyParser = require('body-parser')
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended:true}))
-     
+         
 /*
 *   Start Listening
 */
@@ -46,7 +46,7 @@ app.listen(4000, () => {
 app.get('/signup', (req,res) => {
    res.render('signup');
 })
-           
+              
 /*
 *   Import Validation Middleware
 */
@@ -63,7 +63,7 @@ app.use(expressSession ({
     resave:false,//added 
     saveUninitialized: true //added     
 }))
-                  
+                         
 /*
 *   Flush the errors associated with a session
 *   after each req, res cycle.  See also controllers/storeUser.js
@@ -75,14 +75,14 @@ app.use(flash());
 *   Conditionally Display New Post, Login and New User
 */ 
 global.loggedIn = null;
-      
+              
 app.use("*", (req, res, next) => {
     loggedIn = req.session.userId;
     next()
 });   
 const homeController = require('./controllers/home')
 app.get('/', homeController)
-                   
+                       
 /* 
 *   Handle MyProfile
 */
@@ -95,8 +95,7 @@ app.get('/myProfile', myProfileController)
 app.get('/research', (req,res) => {
     res.render('research');
 })
-           
-   
+       
 /*
 * Handle Question Posts
 */
@@ -118,13 +117,13 @@ app.post('/display/results', displaySearchResultsController)
 */
 const answerController = require('./controllers/displayAnswers')
 app.post('/display/answers', answerController)
-        
+                 
 /*
 * Draft a New Answer
 */
 const newAnswerController = require('./controllers/newAnswer')
 app.post('/draft/answer', newAnswerController)
-                     
+                               
 /*
 * Store a New Answer
 */
@@ -154,13 +153,13 @@ const loginController = require("./controllers/login")
 app.get('/auth/login', loginController);
 const loginUserController = require('./controllers/loginUser')
 app.post('/users/login', loginUserController)
-                     
+                        
 /*
 *   Logout
 */ 
 const logoutController = require('./controllers/logout')
 app.get('/auth/logout', logoutController)
-
+     
 /*
 *   Handle page not found
 */   

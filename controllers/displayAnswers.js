@@ -8,16 +8,12 @@ module.exports = async (req,res) =>{
     const thisQuestionID = req.body.questionID;
     console.log("req.body.questionID: " + thisQuestionID)
  
-    if (thisQuestionID == 0) {
-        res.redirect("index");
-    } else {    
-        const questionBody = await Question.findOne({"_id" : thisQuestionID}, {"answers": 1});   
-        const answers = questionBody.answers
-        console.log("inside else ID: " + thisQuestionID)
-        console.log("answers: " + answers)
-        res.render('displayAnswers', {
-            thisQuestionID,
-            answers
-        })
-    }
-}
+    const questionBody = await Question.findOne({"_id" : thisQuestionID}, {"answers": 1});   
+    const answers = questionBody.answers
+    console.log("inside else ID: " + thisQuestionID)
+    console.log("answers: " + answers)
+    res.render('displayAnswers', {
+        thisQuestionID,
+        answers
+    })
+ }

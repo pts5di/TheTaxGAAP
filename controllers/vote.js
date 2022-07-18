@@ -98,6 +98,40 @@ module.exports = async (req, res) => {
         var respondentRank = thisRespondent.rank;
         respondentRank++;
         await Users.updateOne({ _id : respondentID}, {$set : {answerscore : currentAnswerScore, rank : respondentRank}});
+
+        // Notify the Individual Who Posted the Answer
+        try {
+            console.log("Start to notify respondent")
+            const user_email = thisRespondent.email
+            var nodemailer = require('nodemailer');
+
+            var transporter = nodemailer.createTransport({
+                service: 'Outlook365',
+                auth: {
+                    user: 'admin',
+                    pass: 'Kerensky312'
+                }
+            });
+
+            var mailOptions = {
+                from: 'admin@thetaxgaap.com',
+                to: user_email,
+                subject: 'TheTaxGaap : Someone Downvoted Your Answer',
+                text: 'You should check the site at www.thetaxgaap.com.  ' + thisRespondent.username + ' just downvited your question.  This is their rationale. ' + req.body.rationale
+            };
+
+            transporter.sendMail(mailOptions, function(error, info){
+                if (error) {
+                    console.log(error);
+                } else {
+                    console.log('Email sent: ' + info.response);
+                }
+            });
+        } catch {
+
+            console.log("WARNING: Email was not sent on downvote.")
+
+        }
     }
 
     // Downvote Answer
@@ -129,32 +163,41 @@ module.exports = async (req, res) => {
         await Users.updateOne({ _id : respondentID}, {$set : {answerscore : currentAnswerScore, rank : respondentRank}});
 
         // Notify the Individual Who Posted the Answer
-        console.log("Start to notify respondent")
-        const user_email = thisRespondent.email
-        var nodemailer = require('nodemailer');
+        try {
+            console.log("Start to notify respondent")
+            const user_email = thisRespondent.email
+            var nodemailer = require('nodemailer');
 
-        var transporter = nodemailer.createTransport({
-            service: 'Outlook365',
-            auth: {
-                user: 'admin',
-                pass: 'Kerensky312'
-            }
-        });
+            var transporter = nodemailer.createTransport({
+                service: 'Outlook365',
+                auth: {
+                    user: 'admin',
+                    pass: 'Kerensky312'
+                }
+            });
 
-        var mailOptions = {
-            from: 'admin@thetaxgaap.com',
-            to: user_email,
-            subject: 'TheTaxGaap : Someone Downvoted Your Answer',
-            text: 'You should check the site at www.thetaxgaap.com.  ' + thisRespondent.username + ' just downvited your question.  This is their rationale. ' + req.body.rationale
-        };
+            var mailOptions = {
+                from: 'admin@thetaxgaap.com',
+                to: user_email,
+                subject: 'TheTaxGaap : Someone Downvoted Your Answer',
+                text: 'You should check the site at www.thetaxgaap.com.  ' + thisRespondent.username + ' just downvited your question.  This is their rationale. ' + req.body.rationale
+            };
 
-        transporter.sendMail(mailOptions, function(error, info){
-            if (error) {
-                console.log(error);
-            } else {
-                console.log('Email sent: ' + info.response);
-            }
-        });
+            transporter.sendMail(mailOptions, function(error, info){
+                if (error) {
+                    console.log(error);
+                } else {
+                    console.log('Email sent: ' + info.response);
+                }
+            });
+        } catch {
+
+            console.log("WARNING: Email was not sent on downvote.")
+
+        }
+
+
+        
 
     }
 
