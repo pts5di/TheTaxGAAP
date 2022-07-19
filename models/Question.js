@@ -31,6 +31,7 @@ const QuestionSchema = new Schema ({
     answers: [AnswerSchema]
 });
 
+QuestionSchema.index({keyword1: "text", keyword2: "text", keyword3: "text"});
 const Question = mongoose.model('Question', QuestionSchema);
 
 module.exports = Question
