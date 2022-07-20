@@ -106,18 +106,20 @@ module.exports = async (req, res) => {
             var nodemailer = require('nodemailer');
 
             var transporter = nodemailer.createTransport({
-                service: 'Outlook365',
+                host: 'smtp.office365.com', // Office 365 server
+                port: 587, // secure SMTP
                 auth: {
-                    user: 'admin',
-                    pass: 'Kerensky312'
-                }
-            });
+                  user: "admin@thetaxgaap.com",
+                  pass: require("fs").readFileSync("/home/thetaxgaap/PASSWORD")
+                },
+                tls: { rejectUnauthorized: false }
+              });
 
             var mailOptions = {
                 from: 'admin@thetaxgaap.com',
                 to: user_email,
-                subject: 'TheTaxGaap : Someone Downvoted Your Answer',
-                text: 'You should check the site at www.thetaxgaap.com.  ' + thisRespondent.username + ' just downvited your question.  This is their rationale. ' + req.body.rationale
+                subject: 'TheTaxGaap : Congratulations! Someone Upvoted Your Answer',
+                text: 'You should check the site at www.thetaxgaap.com.  ' + thisRespondent.username + ' just upvoted your question.  Keep up the good work!'
             };
 
             transporter.sendMail(mailOptions, function(error, info){
@@ -171,7 +173,7 @@ module.exports = async (req, res) => {
             var nodemailer = require('nodemailer');
 
             var transporter = nodemailer.createTransport({
-                host: 'http://smtp.office365.com', // Office 365 server
+                host: 'smtp.office365.com', // Office 365 server
                 port: 587, // secure SMTP
                 auth: {
                   user: "admin@thetaxgaap.com",

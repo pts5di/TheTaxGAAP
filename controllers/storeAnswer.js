@@ -41,7 +41,7 @@ module.exports = async (req, res) => {
       var nodemailer = require('nodemailer');
  
       var transporter = nodemailer.createTransport({
-        host: 'http://smtp.office365.com', // Office 365 server
+        host: 'smtp.office365.com', // Office 365 server
         port: 587, // secure SMTP
         auth: {
           user: "admin@thetaxgaap.com",

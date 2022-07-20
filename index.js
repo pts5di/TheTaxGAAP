@@ -103,7 +103,7 @@ const newPostController = require('./controllers/newPost')
 app.get('/posts/new', /*authMiddleware,*/ newPostController)
 const storePostController = require('./controllers/storePost')
 app.post('/posts/store', /*authMiddleware, */ storePostController)
-                                    
+                                        
 /*
 * Handle Research Request
 */
