@@ -10,6 +10,9 @@ module.exports = async (req,res) =>{
  
     const questionBody = await Question.findOne({"_id" : thisQuestionID}, {"answers": 1});   
     const answers = questionBody.answers
+    answers.sort(function sortFunction(answersLow, answersHigh) {
+        return answersHigh.upvotes - answersLow.upvotes;
+    })
     console.log("inside else ID: " + thisQuestionID)
     console.log("answers: " + answers)
     res.render('displayAnswers', {

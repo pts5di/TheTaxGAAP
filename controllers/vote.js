@@ -162,6 +162,8 @@ module.exports = async (req, res) => {
         respondentRank--;
         await Users.updateOne({ _id : respondentID}, {$set : {answerscore : currentAnswerScore, rank : respondentRank}});
 
+
+
         // Notify the Individual Who Posted the Answer
         try {
             console.log("Start to notify respondent")
@@ -169,12 +171,14 @@ module.exports = async (req, res) => {
             var nodemailer = require('nodemailer');
 
             var transporter = nodemailer.createTransport({
-                service: 'Outlook365',
+                host: 'http://smtp.office365.com', // Office 365 server
+                port: 587, // secure SMTP
                 auth: {
-                    user: 'admin',
-                    pass: 'Kerensky312'
-                }
-            });
+                  user: "admin@thetaxgaap.com",
+                  pass: require("fs").readFileSync("/home/thetaxgaap/PASSWORD")
+                },
+                tls: { rejectUnauthorized: false }
+              });
 
             var mailOptions = {
                 from: 'admin@thetaxgaap.com',
@@ -195,10 +199,7 @@ module.exports = async (req, res) => {
             console.log("WARNING: Email was not sent on downvote.")
 
         }
-
-
         
-
     }
 
 

@@ -23,6 +23,7 @@ module.exports = async (req, res) => {
     console.log("Updating the Question Database : " + req.body.thisQuestionID)
     let bodyPlainText = req.body.body.replace(/<\/?[^>]+(>|$)/g, "");
     bodyPlainText = bodyPlainText.replace(/&(nbsp|amp|quot|lt|gt);/g," ");
+    // bodyPlainText = req.body.body; // This is when we fix formatting issue!
     const thisQuestion = await Question.findById({_id: req.body.thisQuestionID});
     let currentDate = new Date();
     console.log("after current date")
@@ -38,13 +39,15 @@ module.exports = async (req, res) => {
       console.log("found userWhoPostedQuestion")
       const user_email = userWhoPostedQuestion.email
       var nodemailer = require('nodemailer');
-
+ 
       var transporter = nodemailer.createTransport({
-        service: 'AOL',
+        host: 'http://smtp.office365.com', // Office 365 server
+        port: 587, // secure SMTP
         auth: {
-          user: 'mcdnjmcd@aol.com',
-          pass: 'TRIDENT5'
-        }
+          user: "admin@thetaxgaap.com",
+          pass: require("fs").readFileSync("/home/thetaxgaap/PASSWORD")
+        },
+        tls: { rejectUnauthorized: false }
       });
 
       var mailOptions = {

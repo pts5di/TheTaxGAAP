@@ -18,7 +18,7 @@
                 </div>
             </div>
         </header>
-
+       
         <!-- Main Content-->
         <div class="container px-4 px-lg-5">
             <div class="row gx-4 gx-lg-5 justify-content-center">
@@ -38,14 +38,12 @@
                     for (var i = index; i > min; i--) { 
                     %>
                     <div class="post-preview">
-                        <a>
-                            <h2 class="post-title" style="color:dodgerblue">
-                                <%= questions[i].title %>
-                            </h2>
-                            <h3 class="post-subtitle">
-                                <%= questions[i].body %>
-                            </h3>
-                        </a>
+                        <h2 class="post-title" style="color:dodgerblue">
+                            <%= questions[i].title %>
+                        </h2>
+                        <p class="post-subtitle">
+                        <%= questions[i].body.replace('\"', "") %>
+                        </p>
                         <p class="post-meta">
                             Posted by:
                             <a><%= questions[i].userid.username %></a>

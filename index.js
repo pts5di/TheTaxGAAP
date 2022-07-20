@@ -82,7 +82,7 @@ app.use("*", (req, res, next) => {
 });   
 const homeController = require('./controllers/home')
 app.get('/', homeController)
-                       
+                                     
 /* 
 *   Handle MyProfile
 */
@@ -95,7 +95,7 @@ app.get('/myProfile', myProfileController)
 app.get('/research', (req,res) => {
     res.render('research');
 })
-       
+               
 /*
 * Handle Question Posts
 */
@@ -103,7 +103,7 @@ const newPostController = require('./controllers/newPost')
 app.get('/posts/new', /*authMiddleware,*/ newPostController)
 const storePostController = require('./controllers/storePost')
 app.post('/posts/store', /*authMiddleware, */ storePostController)
-                              
+                                    
 /*
 * Handle Research Request
 */
@@ -111,7 +111,7 @@ const researchController = require('./controllers/research')
 app.get('/research', researchController)
 const displaySearchResultsController = require('./controllers/displayPosts')
 app.post('/display/results', displaySearchResultsController)
-                           
+                                
 /*  
 * Display Answers
 */
@@ -129,20 +129,20 @@ app.post('/draft/answer', newAnswerController)
 */
 const storeAnswerController = require('./controllers/storeAnswer')
 app.post('/answers/store', storeAnswerController)
-                  
+                            
 /*    
 * Handle Voting
 */
 const voteController = require('./controllers/vote')
 console.log("Before /vote route")
 app.post('/vote', voteController)
-            
+                  
 /*
 *   Register New User
 */
 const newUserController = require('./controllers/newUser')
 const storeUserController = require('./controllers/storeUser')
-
+    
 app.get('/auth/register', newUserController)
 app.post('/users/register', storeUserController)
                             
