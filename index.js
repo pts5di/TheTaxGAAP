@@ -53,7 +53,7 @@ app.get('/signup', (req,res) => {
 const validateMiddleware = require("./middleware/validationMiddleware")
 const authMiddleware = require('./middleware/authMiddleware');
 const redirectIfAuthenticatedMiddleware = require('./middleware/redirectIfAuthenticatedMiddleware')
-             
+                 
 /*
 *   Establish User Sessions
 */ 

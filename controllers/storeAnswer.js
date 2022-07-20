@@ -51,7 +51,7 @@ module.exports = async (req, res) => {
       });
 
       var mailOptions = {
-        from: 'mcdnjmcd@aol.com',
+        from: 'admin@thetaxgaap.com',
         to: user_email,
         subject: 'TheTaxGaap : Someone Answered Your Question!',
         text: 'You should check the site.  ' + thisUser.username + ' just tried to answer your question.  You can review their answer and upvote or downvote it.'
