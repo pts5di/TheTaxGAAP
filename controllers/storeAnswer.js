@@ -21,13 +21,11 @@ module.exports = async (req, res) => {
     // Update the Question Database
     console.log("Body: " + req.body.body);
     console.log("Updating the Question Database : " + req.body.thisQuestionID)
-    let bodyPlainText = req.body.body.replace(/<\/?[^>]+(>|$)/g, "");
-    bodyPlainText = bodyPlainText.replace(/&(nbsp|amp|quot|lt|gt);/g," ");
-    // bodyPlainText = req.body.body; // This is when we fix formatting issue!
+
     const thisQuestion = await Question.findById({_id: req.body.thisQuestionID});
     let currentDate = new Date();
-    console.log("after current date")
-    await Question.updateOne({_id: req.body.thisQuestionID}, {"$push": {"answers" : {respondent: thisUser.username, respondentID:loggedIn, text: bodyPlainText, upvotes:0, date: currentDate}}});
+    console.log("after current date")   
+    await Question.updateOne({_id: req.body.thisQuestionID}, {"$push": {"answers" : {respondent: thisUser.username, respondentID:loggedIn, text: req.body.body, upvotes:0, date: currentDate}}});
 
     // Notify the Individual Who Posted the Question
     try {
