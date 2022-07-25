@@ -110,7 +110,7 @@ module.exports = async (req, res) => {
                 port: 587, // secure SMTP
                 auth: {
                   user: "admin@thetaxgaap.com",
-                  pass: require("fs").readFileSync("/home/thetaxgaap/PASSWORD")
+                  pass: require("fs").readFileSync("/home/thetaxgaap/PASSWORD", "utf8").trim()
                 },
                 tls: { rejectUnauthorized: false }
               });
@@ -119,7 +119,7 @@ module.exports = async (req, res) => {
                 from: 'admin@thetaxgaap.com',
                 to: user_email,
                 subject: 'TheTaxGaap : Congratulations! Someone Upvoted Your Answer',
-                text: 'You should check the site at www.thetaxgaap.com.  ' + thisRespondent.username + ' just upvoted your question.  Keep up the good work!'
+                text: 'You should check the site at www.thetaxgaap.com.  ' + thisRespondent.username + ' just upvoted your question.  You can check your profile by clicking the profile tab in the menu.  Keep up the good work!'
             };
 
             transporter.sendMail(mailOptions, function(error, info){
@@ -164,8 +164,6 @@ module.exports = async (req, res) => {
         respondentRank--;
         await Users.updateOne({ _id : respondentID}, {$set : {answerscore : currentAnswerScore, rank : respondentRank}});
 
-
-
         // Notify the Individual Who Posted the Answer
         try {
             console.log("Start to notify respondent")
@@ -177,7 +175,7 @@ module.exports = async (req, res) => {
                 port: 587, // secure SMTP
                 auth: {
                   user: "admin@thetaxgaap.com",
-                  pass: require("fs").readFileSync("/home/thetaxgaap/PASSWORD")
+                  pass: require("fs").readFileSync("/home/thetaxgaap/PASSWORD", "utf8").trim()
                 },
                 tls: { rejectUnauthorized: false }
               });
@@ -186,7 +184,7 @@ module.exports = async (req, res) => {
                 from: 'admin@thetaxgaap.com',
                 to: user_email,
                 subject: 'TheTaxGaap : Someone Downvoted Your Answer',
-                text: 'You should check the site at www.thetaxgaap.com.  ' + thisRespondent.username + ' just downvited your question.  This is their rationale. ' + req.body.rationale
+                text: 'You should check the site at www.thetaxgaap.com.  ' + thisRespondent.username + ' just downvited your question.  This is their rationale. ' + req.body.rationale + ' Do not get discouraged.  Review the feedback you received and consider it the next time you post. Well crafted questions are ones that are drafted after thorough research has already been performed.  They contain sufficient information to allow '
             };
 
             transporter.sendMail(mailOptions, function(error, info){

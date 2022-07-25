@@ -1,11 +1,6 @@
 const Users = require('../models/User')
 const Question = require('../models/Question');
 
-
-/*
-*  TO BE REVISED
-*/
-
 module.exports = async (req, res) => {
 
     console.log("Inside storeAnswer.js")
@@ -19,15 +14,14 @@ module.exports = async (req, res) => {
     console.log("req.method: " + req.method)
 
     // Update the Question Database
-    console.log("Body: " + req.body.body);
     console.log("Updating the Question Database : " + req.body.thisQuestionID)
-    let bodyPlainText = req.body.body.replace(/<\/?[^>]+(>|$)/g, "");
-    bodyPlainText = bodyPlainText.replace(/&(nbsp|amp|quot|lt|gt);/g," ");
+    // let bodyPlainText = req.body.body.replace(/<\/?[^>]+(>|$)/g, "");  // MAY BE DELETED IN FUTURE
+    // bodyPlainText = bodyPlainText.replace(/&(nbsp|amp|quot|lt|gt);/g," ");  // MAY BE DELETED IN FUTURE
     // bodyPlainText = req.body.body; // This is when we fix formatting issue!
     const thisQuestion = await Question.findById({_id: req.body.thisQuestionID});
     let currentDate = new Date();
     console.log("after current date")
-    await Question.updateOne({_id: req.body.thisQuestionID}, {"$push": {"answers" : {respondent: thisUser.username, respondentID:loggedIn, text: bodyPlainText, upvotes:0, date: currentDate}}});
+    await Question.updateOne({_id: req.body.thisQuestionID}, {"$push": {"answers" : {respondent: thisUser.username, respondentID:loggedIn, text: req.body.body, upvotes:0, date: currentDate}}});
 
     // Notify the Individual Who Posted the Question
     try {
@@ -45,7 +39,7 @@ module.exports = async (req, res) => {
         port: 587, // secure SMTP
         auth: {
           user: "admin@thetaxgaap.com",
-          pass: require("fs").readFileSync("/home/thetaxgaap/PASSWORD")
+          pass: require("fs").readFileSync("/home/thetaxgaap/PASSWORD", "utf8").trim()
         },
         tls: { rejectUnauthorized: false }
       });
@@ -54,7 +48,7 @@ module.exports = async (req, res) => {
         from: 'admin@thetaxgaap.com',
         to: user_email,
         subject: 'TheTaxGaap : Someone Answered Your Question!',
-        text: 'You should check the site.  ' + thisUser.username + ' just tried to answer your question.  You can review their answer and upvote or downvote it.'
+        text: 'Congratulations! ' + thisUser.username + ' just tried to answer your question.  You should check the site at www.thetaxgaap.com.  You can review their answer and upvote or downvote it.  Your upvotes and downvotes impact the profile for ' + thisUser.username + '.  You can also check your own rank and status by checking the profile tab in the menu.'
       };
 
       transporter.sendMail(mailOptions, function(error, info){

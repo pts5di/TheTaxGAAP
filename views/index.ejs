@@ -13,15 +13,36 @@
                         <div class="site-heading">
                             <h2>The Tax GAAP</h2>
                             <span class="subheading">There's Power in Numbers</span>
+                            <div></div>
+                            <div></div>
+
                         </div>
                     </div>
                 </div>
             </div>
         </header>
-       
+                            
         <!-- Main Content-->
         <div class="container px-4 px-lg-5">
+
             <div class="row gx-4 gx-lg-5 justify-content-center">
+
+                <!-- CHIRON -->
+                <div class="hwrap">
+                    <div class="hmove">
+                        <div class="hitem">Post Good Questions </div>
+                        <div class="hitem">And Correct Answers</div>
+                        <div class="hitem">Increase Your Rank...</div>
+                        <div class="hitem"><strong>Total Posts As Of Today: </strong> <%= numQuestions %></div>
+                        <div class="hitem"><strong>Total Users As Of Today: </strong><%= numUsers %></div>      
+                        <div class="hitem"><%= allUsers[0].username %>      Rank:     <%= allUsers[0].rank %></div>      
+                        <div class="hitem"><%= allUsers[1].username %>      Rank:     <%= allUsers[1].rank %></div>
+                        <div class="hitem"><%= allUsers[2].username %>      Rank:     <%= allUsers[2].rank %></div>
+                        <div class="hitem"><%= allUsers[3].username %>      Rank:     <%= allUsers[3].rank %></div>
+                    </div>
+                </div>
+                <!-- END CHIRON -->  
+   
                 <!-- Main Carousel -->       
                 <div class="col-md-10 col-lg-8 col-xl-7">
                     <h2>Most Recent Questions:</h2>
@@ -42,7 +63,7 @@
                             <%= questions[i].title %>
                         </h2>
                         <p class="post-subtitle">
-                        <%= questions[i].body.replace('\"', "") %>
+                        <%- questions[i].body.replace('\"', "") %>
                         </p>
                         <p class="post-meta">
                             Posted by:
