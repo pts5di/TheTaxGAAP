@@ -47,16 +47,23 @@ module.exports = async (req, res) => {
         var nodemailer = require('nodemailer');
 
         var transporter = nodemailer.createTransport({
-            service: 'Outlook365',
+            host: 'smtp.office365.com', // Office 365 server
+            port: 587, // secure SMTP
             auth: {
-                user: 'admin',
-                pass: 'Kerensky312'
-            }
+              user: "admin@thetaxgaap.com",
+              pass: require("fs").readFileSync("/home/thetaxgaap/PASSWORD", "utf8").trim()
+            },
+            tls: { rejectUnauthorized: false }
         });
 
+        var sender = 'thetaxgaapadmin@thetaxgaap.com';
+
         var mailOptions = {
-            from: 'admin@thetaxgaap.com',
+            from: sender,
             to: user_email,
+            // BCC email to sender; an inbox rule can be configured 
+            // to automatically filter these to Sent Items (or other outbox folder)
+            bcc: sender,
             subject: 'TheTaxGaap : Someone Downvoted Your Question.',
             text: 'You should check the site at www.thetaxgaap.com.  ' + relevantUser.username + ' just downvited your question.  This is their rationale. ' + req.body.rationale
         };
@@ -113,11 +120,16 @@ module.exports = async (req, res) => {
                   pass: require("fs").readFileSync("/home/thetaxgaap/PASSWORD", "utf8").trim()
                 },
                 tls: { rejectUnauthorized: false }
-              });
+            });
+
+            var sender = 'thetaxgaapadmin@thetaxgaap.com';
 
             var mailOptions = {
-                from: 'admin@thetaxgaap.com',
+                from: sender,
                 to: user_email,
+                // BCC email to sender; an inbox rule can be configured 
+                // to automatically filter these to Sent Items (or other outbox folder)
+                bcc: sender,
                 subject: 'TheTaxGaap : Congratulations! Someone Upvoted Your Answer',
                 text: 'You should check the site at www.thetaxgaap.com.  ' + thisRespondent.username + ' just upvoted your question.  You can check your profile by clicking the profile tab in the menu.  Keep up the good work!'
             };
@@ -178,11 +190,16 @@ module.exports = async (req, res) => {
                   pass: require("fs").readFileSync("/home/thetaxgaap/PASSWORD", "utf8").trim()
                 },
                 tls: { rejectUnauthorized: false }
-              });
+            });
+            
+            var sender = 'thetaxgaapadmin@thetaxgaap.com';
 
             var mailOptions = {
-                from: 'admin@thetaxgaap.com',
+                from: sender,
                 to: user_email,
+                // BCC email to sender; an inbox rule can be configured 
+                // to automatically filter these to Sent Items (or other outbox folder)
+                bcc: sender,
                 subject: 'TheTaxGaap : Someone Downvoted Your Answer',
                 text: 'You should check the site at www.thetaxgaap.com.  ' + thisRespondent.username + ' just downvited your question.  This is their rationale. ' + req.body.rationale + ' Do not get discouraged.  Review the feedback you received and consider it the next time you post. Well crafted questions are ones that are drafted after thorough research has already been performed.  They contain sufficient information to allow '
             };
