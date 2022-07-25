@@ -13,6 +13,8 @@ module.exports = async (req, res) => {
     await Users.updateOne({ username : thisUser.username}, {$set : {asked : newAsked, rank : newRank}})
 
     // Update the Question Database
+    //let bodyPlainText = req.body.body.replace(/<\/?[^>]+(>|$)/g, "");  // MAY BE DELETED IN FUTURE
+    //bodyPlainText = bodyPlainText.replace(/&(nbsp|amp|quot|lt|gt);/g," ");  // MAY BE DELETED IN FUTURE
     Question.create({title: req.body.title, keyword1: req.body.keyword1, body: req.body.body, userid: req.session.userId, answers:[]}, (error, user) =>{
       console.log("Inside Question.create")
       if(error){
