@@ -15,9 +15,6 @@ module.exports = async (req, res) => {
 
     // Update the Question Database
     console.log("Updating the Question Database : " + req.body.thisQuestionID)
-    // let bodyPlainText = req.body.body.replace(/<\/?[^>]+(>|$)/g, "");  // MAY BE DELETED IN FUTURE
-    // bodyPlainText = bodyPlainText.replace(/&(nbsp|amp|quot|lt|gt);/g," ");  // MAY BE DELETED IN FUTURE
-    // bodyPlainText = req.body.body; // This is when we fix formatting issue!
     const thisQuestion = await Question.findById({_id: req.body.thisQuestionID});
     let currentDate = new Date();
     console.log("after current date")
@@ -44,9 +41,14 @@ module.exports = async (req, res) => {
         tls: { rejectUnauthorized: false }
       });
 
+      var sender = 'thetaxgaapadmin@thetaxgaap.com';
+
       var mailOptions = {
-        from: 'admin@thetaxgaap.com',
+        from: sender,
         to: user_email,
+        //BCC email to sender; and inbox rule can be configured 
+        //to automatically filter these to Sent Items
+        bcc: sender,
         subject: 'TheTaxGaap : Someone Answered Your Question!',
         text: 'Congratulations! ' + thisUser.username + ' just tried to answer your question.  You should check the site at www.thetaxgaap.com.  You can review their answer and upvote or downvote it.  Your upvotes and downvotes impact the profile for ' + thisUser.username + '.  You can also check your own rank and status by checking the profile tab in the menu.'
       };

@@ -15,13 +15,12 @@
                             <span class="subheading">There's Power in Numbers</span>
                             <div></div>
                             <div></div>
-
                         </div>
                     </div>
                 </div>
             </div>
         </header>
-                            
+                                
         <!-- Main Content-->
         <div class="container px-4 px-lg-5">
 
@@ -35,14 +34,15 @@
                         <div class="hitem">Increase Your Rank...</div>
                         <div class="hitem"><strong>Total Posts As Of Today: </strong> <%= numQuestions %></div>
                         <div class="hitem"><strong>Total Users As Of Today: </strong><%= numUsers %></div>      
-                        <div class="hitem"><%= allUsers[0].username %>      Rank:     <%= allUsers[0].rank %></div>      
-                        <div class="hitem"><%= allUsers[1].username %>      Rank:     <%= allUsers[1].rank %></div>
-                        <div class="hitem"><%= allUsers[2].username %>      Rank:     <%= allUsers[2].rank %></div>
-                        <div class="hitem"><%= allUsers[3].username %>      Rank:     <%= allUsers[3].rank %></div>
+                        <div class="hitem">Top Ranked Users:</div>
+                        <div class="hitem"><%= allUsers[0].username %>'s   <strong>Points:</strong> <%= allUsers[0].rank %></div>      
+                        <div class="hitem"><%= allUsers[1].username %>'s   <strong>Points:</strong> <%= allUsers[1].rank %></div>
+                        <div class="hitem"><%= allUsers[2].username %>'s   <strong>Points:</strong> <%= allUsers[2].rank %></div>
+                        <div class="hitem"><%= allUsers[3].username %>'s   <strong>Points:</strong> <%= allUsers[3].rank %></div>
                     </div>
                 </div>
                 <!-- END CHIRON -->  
-   
+       
                 <!-- Main Carousel -->       
                 <div class="col-md-10 col-lg-8 col-xl-7">
                     <h2>Most Recent Questions:</h2>
