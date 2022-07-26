@@ -16,7 +16,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/GregLimDB', {useNewUrlParser: true})
 * is used for nodemon so that we can start afresh each time we save.
 */
 const app = new express()
-                  
+                      
 /*   
 *  EJS is our templating engine.
 */
@@ -152,13 +152,13 @@ const loginController = require("./controllers/login")
 app.get('/auth/login', loginController);
 const loginUserController = require('./controllers/loginUser')
 app.post('/users/login', loginUserController)
-                               
+                                    
 /*
 *   Logout
 */ 
 const logoutController = require('./controllers/logout')
 app.get('/auth/logout', logoutController)
-                         
+                                    
 /*  
 *   Handle page not found
 */   

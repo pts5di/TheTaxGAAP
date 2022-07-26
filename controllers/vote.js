@@ -61,8 +61,8 @@ module.exports = async (req, res) => {
         var mailOptions = {
             from: sender,
             to: user_email,
-            // BCC email to sender; an inbox rule can be configured 
-            // to automatically filter these to Sent Items (or other outbox folder)
+            //BCC email to sender; an inbox rule can be configured
+            //to automatically filter these to Sent Items (or other outbox folder)
             bcc: sender,
             subject: 'TheTaxGaap : Someone Downvoted Your Question.',
             text: 'You should check the site at www.thetaxgaap.com.  ' + relevantUser.username + ' just downvited your question.  This is their rationale. ' + req.body.rationale
@@ -127,8 +127,6 @@ module.exports = async (req, res) => {
             var mailOptions = {
                 from: sender,
                 to: user_email,
-                // BCC email to sender; an inbox rule can be configured 
-                // to automatically filter these to Sent Items (or other outbox folder)
                 bcc: sender,
                 subject: 'TheTaxGaap : Congratulations! Someone Upvoted Your Answer',
                 text: 'You should check the site at www.thetaxgaap.com.  ' + thisRespondent.username + ' just upvoted your question.  You can check your profile by clicking the profile tab in the menu.  Keep up the good work!'
