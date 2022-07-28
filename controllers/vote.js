@@ -1,5 +1,16 @@
 const Users = require('../models/User')
 const Questions = require('../models/Question');
+const Vote = require('../models/Vote');
+const { count } = require('console');
+
+function countVotes(thisQuestion) {
+    thisQuestion.populate("votes");
+    let voteSum = 0;
+    for(let i = 0; i < thisQuestion.votes.length; i++){
+        voteSum += thisQuestion.votes[i].voteValue;
+    }
+    return voteSum;
+}
 
 module.exports = async (req, res) => {
 
@@ -11,11 +22,10 @@ module.exports = async (req, res) => {
 
     if (req.body.action == "upvoteQuestion") {
         console.log("Inside upvoteQuestion")
+        await Vote.create({userId: loggedIn, itemId: req.body.questionID, itemType: "Question", voteValue: 1});
         const thisQuestion = await Questions.findById(req.body.questionID);
-        revisedScore = thisQuestion.upvotes;
-        revisedScore++;
-        await Questions.updateOne({ _id : thisQuestion._id}, {$set : {upvotes : revisedScore}})   
-        
+        revisedScore = countVotes(thisQuestion);
+
         // Update User's Statistics
         const relevantUserID = thisQuestion.userid;
         const relevantUser = await Users.findById(relevantUserID);
@@ -27,10 +37,9 @@ module.exports = async (req, res) => {
 
     if (req.body.action == "downvoteQuestion") {
         console.log("Inside downvoteQuestion")
+        await Vote.create({userId: loggedIn, itemId: req.body.questionID, itemType: "Question", voteValue: -1});
         const thisQuestion = await Questions.findById(req.body.questionID);
-        revisedScore = thisQuestion.upvotes;
-        revisedScore--;
-        await Questions.updateOne({ _id : thisQuestion._id}, {$set : {upvotes : revisedScore}})    
+        revisedScore = countVotes(thisQuestion);
 
         // Update User's Statistics
         const relevantUserID = thisQuestion.userid;
@@ -83,18 +92,15 @@ module.exports = async (req, res) => {
         const thisQuestion = await Questions.findById(req.body.questionID);
         console.log("After thisQuestion")
         const arrayIndex = req.body.index;
-        revisedScore = thisQuestion.answers[arrayIndex].upvotes;
+        const thisAnswer = thisQuestion.answers[arrayIndex];
+        await Vote.create({userId: loggedIn, itemId: thisAnswer._id, itemType: "Answer", voteValue: 1});
+        revisedScore = countVotes(thisAnswer);
         console.log(revisedScore);
-        revisedScore++;
-        thisQuestion.answers[arrayIndex].upvotes = revisedScore;
         console.log("After update answer")
-        await thisQuestion.save(function (err) {
-            console.log(err)
-        })      
         
         // Upgrade Person who Answered's Stats
         console.log("Upgrade User's Stats")
-        const respondentID = thisQuestion.answers[arrayIndex].respondentID;
+        const respondentID = thisAnswer.respondentID;
         console.log("PersonWhoAnsweredID: " + respondentID)
         const thisRespondent = await Users.findById(respondentID);
         console.log("Update answerscore")
@@ -154,18 +160,15 @@ module.exports = async (req, res) => {
         const thisQuestion = await Questions.findById(req.body.questionID);
         console.log("After thisQuestion")
         const arrayIndex = req.body.index;
-        revisedScore = thisQuestion.answers[arrayIndex].upvotes;
+        const thisAnswer = thisQuestion.answers[arrayIndex];
+        await Vote.create({userId: loggedIn, itemId: thisAnswer._id, itemType: "Answer", voteValue: 1});
+        revisedScore = countVotes(thisAnswer);
         console.log(revisedScore);
-        revisedScore--;
-        thisQuestion.answers[arrayIndex].upvotes = revisedScore;
         console.log("After update answer")
-        await thisQuestion.save(function (err) {
-            console.log(err)
-        })              
-        
+
         // Downgrade User's Stats
         console.log("Downgrade User's Stats")
-        const respondentID = thisQuestion.answers[arrayIndex].respondentID;
+        const respondentID = thisAnswer.respondentID;
         console.log("RespondentID: " + respondentID)
         const thisRespondent = await Users.findById(respondentID);
         console.log("Update answerscore")

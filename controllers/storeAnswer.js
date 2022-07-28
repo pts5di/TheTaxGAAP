@@ -18,7 +18,7 @@ module.exports = async (req, res) => {
     const thisQuestion = await Question.findById({_id: req.body.thisQuestionID});
     let currentDate = new Date();
     console.log("after current date")
-    await Question.updateOne({_id: req.body.thisQuestionID}, {"$push": {"answers" : {respondent: thisUser.username, respondentID:loggedIn, text: req.body.body, upvotes:0, date: currentDate}}});
+    await Question.updateOne({_id: req.body.thisQuestionID}, {"$push": {"answers" : {respondent: thisUser.username, respondentID:loggedIn, text: req.body.body, date: currentDate}}});
 
     // Notify the Individual Who Posted the Question
     try {

@@ -7,7 +7,7 @@ const AnswerSchema = new Schema ({
     text: String,
     date: Date,
 })
-AnswerSchema.virtual('upvotes', {
+AnswerSchema.virtual('votes', {
     ref: 'Vote',
     localField: '_id',
     foreignField: 'itemId'
@@ -30,7 +30,7 @@ const QuestionSchema = new Schema ({
     },
     answers: [AnswerSchema]
 });
-QuestionSchema.virtual('upvotes', {
+QuestionSchema.virtual('votes', {
     ref: 'Vote',
     localField: '_id',
     foreignField: 'itemId'
