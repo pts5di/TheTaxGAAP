@@ -6,8 +6,12 @@ const AnswerSchema = new Schema ({
     respondent: String,
     text: String,
     date: Date,
-    upvotes: Number
 })
+AnswerSchema.virtual('upvotes', {
+    ref: 'Vote',
+    localField: '_id',
+    foreignField: 'itemId'
+});
 
 const QuestionSchema = new Schema ({
     userid: {
@@ -20,15 +24,16 @@ const QuestionSchema = new Schema ({
     keyword2: String,
     keyword3: String,
     body: String,
-    upvotes: {
-        type: Number,
-        default: 0
-    },
     datePosted: {
         type: Date,
         default: new Date()
     },
     answers: [AnswerSchema]
+});
+QuestionSchema.virtual('upvotes', {
+    ref: 'Vote',
+    localField: '_id',
+    foreignField: 'itemId'
 });
 
 QuestionSchema.index({title: "text", body: "text", keyword1: "text", keyword2: "text", keyword3: "text"});
