@@ -51,11 +51,12 @@
                     <h2 style="text-align: center">Upvote/Downvote an Answer</h2>
                     <h2 style="text-align: center">OR</h2>
                     <h2 style="text-align: center">Click Answer To Add Your Own</h2>
-                    <p hidden id="answerIndex" type="number">-1</p>
+                    <p hidden id="answerId" type="number">-1</p>
                     <% } else { %>
                     <h2 style="text-align: center">No Answers Yet</h2>
                     <h2 style="text-align: center">Click Answer To Add Your Own</h2>
-                    <p hidden id="answerIndex" type="number">-1</p>
+                    <p hidden id="answerId" type="number">-1</p>
+                    <p hidden id="userVote" type="number">0</p>
                     <% } %>  
                   </div>
                 </div>
@@ -72,7 +73,8 @@
                 <div class="row" id="parent-node">
                   <p><strong>Posted by: </strong><%= answers[i].respondent %> on <%= answers[i].date.toDateString() %> </p>
                   <p id="score"><strong>Relevance: </strong><%= answers[i].upvotes %></p>
-                  <p hidden id="answerIndex" type="number"><%= i %></p>
+                  <p hidden id="answerId" type="number"><%= answers[i]._id %></p>
+                  <p hidden id="userVote" type="number"><%= answers[i].userVote %></p>
                 </div>
               </div>
               <% } %>
@@ -154,23 +156,41 @@
         var score_node = $(".carousel-item.active #score")[0]
 
         // Find the active answer index modified to account for shift due to initial slide
-        var mongoIndex = $(".carousel-item.active #answerIndex")[0].innerHTML
-
-        $.ajax({
-          type: "post",
-          url: "/vote",
-          datatype: "json",
-          data: {"questionID" : stringPostID, "index" : mongoIndex, "action" : "upvoteAnswer"},
-          success: function(result) {
-            score_node.innerHTML = "<strong>Score: </strong>" + result.revisedScore;
-            alert("Your vote has been recorded!");
-          }
-        })
+        var answerId = $(".carousel-item.active #answerId")[0].innerHTML
+        var userVoteNode = $(".carousel-item.active #userVote")[0]
+        if (Number.parseInt(userVoteNode.innerText) != 1) {
+          // user is changing their vote to +1
+          $.ajax({
+            type: "post",
+            url: "/vote",
+            datatype: "json",
+            data: {"questionID" : stringPostID, "answerID" : answerId, "action" : "upvote", "type": "Answer"},
+            success: function(result) {
+              console.log("Result: " + JSON.stringify(result))
+              console.log("result.revisedScore: " + result.revisedScore);
+              userVoteNode.innerHTML = "1";
+              score_node.innerHTML = "<strong>Score: </strong>" + result.revisedScore;
+            }
+          })
+        } else {
+          $.ajax({
+            type: "post",
+            url: "/vote",
+            datatype: "json",
+            data: {"questionID" : stringPostID, "answerID" : answerId, "action" : "cancel", "type": "Answer"},
+            success: function(result) {
+              console.log("Result: " + JSON.stringify(result))
+              console.log("result.revisedScore: " + result.revisedScore);
+              userVoteNode.innerHTML = "0";
+              score_node.innerHTML = "<strong>Score: </strong>" + result.revisedScore;
+            }
+          })
+        }
       });
   
       /* Handle Downvote*/
       $("#minus").click(function(){
-        var rationale = explainDownvote();
+        console.log("Inside Minus");
 
         // Find the questionID for the active carousel item
         var stringPostID = document.getElementById("questionID").innerHTML
@@ -180,19 +200,37 @@
         var score_node = $(".carousel-item.active #score")[0]
 
         // Find the active answer index modified to account for shift due to initial slide
-        var mongoIndex = $(".carousel-item.active #answerIndex")[0].innerHTML
+        var answerId = $(".carousel-item.active #answerId")[0].innerHTML
+        var userVoteNode = $(".carousel-item.active #userVote")[0]
+        if (Number.parseInt(userVoteNode.innerText) != -1) {
+          // user is changing their vote to -1
 
-        $.ajax({
-          type: "post",
-          url: "/vote",
-          datatype: "json",
-          data: {"questionID" : stringPostID, "index" : mongoIndex, "rationale" : rationale, "action" : "downvoteAnswer"},
-          success: function(result) {
-            /*console.log("Result: " + JSON.stringify(result))*/
-            score_node.innerHTML = "<strong>Score: </strong>" + result.revisedScore;
-            alert("Your vote has been recorded!");
-          }
-        })
+          var rationale = explainDownvote();
+          $.ajax({
+            type: "post",
+            url: "/vote",
+            datatype: "json",
+            data: {"questionID" : stringPostID, "answerID" : answerId, "rationale" : rationale, "action" : "downvote", "type": "Answer"},
+            success: function(result) {
+              console.log("Result: " + JSON.stringify(result));
+              userVoteNode.innerHTML = "-1";
+              score_node.innerHTML = "<strong>Score: </strong>" + result.revisedScore;
+            }
+          });
+        } else {
+          // user is cancelling their vote
+          $.ajax({
+            type: "post",
+            url: "/vote",
+            datatype: "json",
+            data: {"questionID" : stringPostID, "answerID" : answerId, "rationale" : rationale, "action" : "cancel", "type": "Answer"},
+            success: function(result) {
+              console.log("Result: " + JSON.stringify(result));
+              userVoteNode.innerHTML = "0";
+              score_node.innerHTML = "<strong>Score: </strong>" + result.revisedScore;
+            }
+        });
+      }
       });
 
     }); 
