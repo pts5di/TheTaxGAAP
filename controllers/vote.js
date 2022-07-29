@@ -161,7 +161,7 @@ module.exports = async (req, res) => {
         console.log("After thisQuestion")
         const arrayIndex = req.body.index;
         const thisAnswer = thisQuestion.answers[arrayIndex];
-        await Vote.create({userId: loggedIn, itemId: thisAnswer._id, itemType: "Answer", voteValue: 1});
+        await Vote.create({userId: loggedIn, itemId: thisAnswer._id, itemType: "Answer", voteValue: -1});
         revisedScore = countVotes(thisAnswer);
         console.log(revisedScore);
         console.log("After update answer")
