@@ -16,8 +16,8 @@ mongoose.connect('mongodb://127.0.0.1:27017/GregLimDB', {useNewUrlParser: true})
 * is used for nodemon so that we can start afresh each time we save.
 */
 const app = new express()
-                      
-/*   
+                              
+/*    
 *  EJS is our templating engine.
 */
 const ejs = require('ejs')
@@ -69,12 +69,12 @@ app.use(expressSession ({
 */
 const flash = require('connect-flash');
 app.use(flash());
-                           
+                               
 /*    
 *   Conditionally Display New Post, Login and New User
-*/ 
+*/    
 global.loggedIn = null;
-              
+                  
 app.use("*", (req, res, next) => {
     loggedIn = req.session.userId;
     next()
