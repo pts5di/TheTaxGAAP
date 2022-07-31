@@ -8,7 +8,7 @@ const mongoose = require('mongoose')
 * Connect to the relevant MongoDB.
 */
 mongoose.connect('mongodb://127.0.0.1:27017/GregLimDB', {useNewUrlParser: true})
-                 
+                     
 /* 
 * Calls Express as a function to begin a new express app.
 * The second argument is a callback function that begins when
@@ -16,7 +16,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/GregLimDB', {useNewUrlParser: true})
 * is used for nodemon so that we can start afresh each time we save.
 */
 const app = new express()
-                              
+                                    
 /*    
 *  EJS is our templating engine.
 */

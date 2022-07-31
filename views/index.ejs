@@ -63,7 +63,7 @@
                             <%= questions[i].title %>
                         </h2>
                         <p class="post-subtitle">
-                        <!-- CAUTION: The <%= escapes the HTML in the Buffer but <%- does not! -->
+                        <!-- CAUTION: The = escapes the HTML in the Buffer but - does not! -->
                         <%- questions[i].body.replace('\"', "") %>
                         </p>
                         <p class="post-meta">
