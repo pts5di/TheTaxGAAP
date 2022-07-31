@@ -35,10 +35,10 @@
                         <div class="hitem"><strong>Total Posts As Of Today: </strong> <%= numQuestions %></div>
                         <div class="hitem"><strong>Total Users As Of Today: </strong><%= numUsers %></div>      
                         <div class="hitem">Top Ranked Users:</div>
-                        <div class="hitem"><%= allUsers[0].username %>'s   <strong>Points:</strong> <%= allUsers[0].rank %></div>      
-                        <div class="hitem"><%= allUsers[1].username %>'s   <strong>Points:</strong> <%= allUsers[1].rank %></div>
-                        <div class="hitem"><%= allUsers[2].username %>'s   <strong>Points:</strong> <%= allUsers[2].rank %></div>
-                        <div class="hitem"><%= allUsers[3].username %>'s   <strong>Points:</strong> <%= allUsers[3].rank %></div>
+                        <div class="hitem"><strong><%= allUsers[0].username %>'s   Points:</strong> <%= allUsers[0].rank %></div>      
+                        <div class="hitem"><strong><%= allUsers[1].username %>'s   Points:</strong> <%= allUsers[1].rank %></div>
+                        <div class="hitem"><strong><%= allUsers[2].username %>'s   Points:</strong> <%= allUsers[2].rank %></div>
+                        <div class="hitem"><strong><%= allUsers[3].username %>'s   Points:</strong> <%= allUsers[3].rank %></div>
                     </div>
                 </div>
                 <!-- END CHIRON -->  
@@ -63,6 +63,7 @@
                             <%= questions[i].title %>
                         </h2>
                         <p class="post-subtitle">
+                        <!-- CAUTION: The <%= escapes the HTML in the Buffer but <%- does not! -->
                         <%- questions[i].body.replace('\"', "") %>
                         </p>
                         <p class="post-meta">
