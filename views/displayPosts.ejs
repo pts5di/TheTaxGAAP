@@ -54,8 +54,10 @@
                 %>
               <div class="carousel-item" style="text-align: justify" >
                 <div class="row" id = "message-body">
-                  <h2><%= questions[i].title %></h2>
-                  <p><%- questions[i].body %></p>
+                  <h2 class="post-title" style = "color:dodgerblue"><%= questions[i].title %></h2>
+                  <p class="post-subtitle">
+                    <%- questions[i].body.replace('\"', "") %>
+                  </p>
                 </div>
                 <div class="row" id="parent-node">
                   <p><strong>Posted by: </strong><%= questions[i].userid.username %> on <%= questions[i].datePosted.toDateString() %> </p>

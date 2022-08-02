@@ -8,7 +8,7 @@ const mongoose = require('mongoose')
 * Connect to the relevant MongoDB.
 */
 mongoose.connect('mongodb://127.0.0.1:27017/GregLimDB', {useNewUrlParser: true})
-                     
+                          
 /* 
 * Calls Express as a function to begin a new express app.
 * The second argument is a callback function that begins when
@@ -16,7 +16,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/GregLimDB', {useNewUrlParser: true})
 * is used for nodemon so that we can start afresh each time we save.
 */
 const app = new express()
-                                    
+                                         
 /*    
 *  EJS is our templating engine.
 */
@@ -122,7 +122,7 @@ app.post('/display/answers', answerController)
 */
 const newAnswerController = require('./controllers/newAnswer')
 app.post('/draft/answer', newAnswerController)
-                               
+                                               
 /*
 * Store a New Answer
 */
@@ -152,7 +152,7 @@ const loginController = require("./controllers/login")
 app.get('/auth/login', loginController);
 const loginUserController = require('./controllers/loginUser')
 app.post('/users/login', loginUserController)
-                                    
+                                         
 /*
 *   Logout
 */ 
