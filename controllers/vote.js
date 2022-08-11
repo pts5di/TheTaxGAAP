@@ -90,10 +90,10 @@ module.exports = async (req, res) => {
             console.log(err)
         })      
         
-        // Upgrade User's Stats
+        // Upgrade Person who Answered's Stats
         console.log("Upgrade User's Stats")
         const respondentID = thisQuestion.answers[arrayIndex].respondentID;
-        console.log("RespondentID: " + respondentID)
+        console.log("PersonWhoAnsweredID: " + respondentID)
         const thisRespondent = await Users.findById(respondentID);
         console.log("Update answerscore")
         var currentAnswerScore = thisRespondent.answerscore;
@@ -106,6 +106,8 @@ module.exports = async (req, res) => {
 
         // Notify the Individual Who Posted the Answer
         try {
+
+            // Now Send Email to the Person who Answered
             console.log("Start to notify respondent")
             const user_email = thisRespondent.email
             var nodemailer = require('nodemailer');
@@ -127,7 +129,7 @@ module.exports = async (req, res) => {
                 to: user_email,
                 bcc: sender,
                 subject: 'TheTaxGaap : Congratulations! Someone Upvoted Your Answer',
-                text: 'You should check the site at www.thetaxgaap.com.  ' + thisRespondent.username + ' just upvoted your question.  You can check your profile by clicking the profile tab in the menu.  Keep up the good work!'
+                text: 'Hello ' + thisRespondent.username + ':/r' + 'You should check the site at thetaxgaap.com.  Someone just upvoted an answer you provided to a question.  You can check your profile by clicking the profile tab in the menu.  Keep up the good work!'
             };
 
             transporter.sendMail(mailOptions, function(error, info){
@@ -139,7 +141,7 @@ module.exports = async (req, res) => {
             });
         } catch {
 
-            console.log("WARNING: Email was not sent on downvote.")
+            console.log("WARNING: Email was not sent on upvote.")
 
         }
     }

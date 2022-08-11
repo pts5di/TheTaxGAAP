@@ -7,8 +7,9 @@ const mongoose = require('mongoose')
 /*
 * Connect to the relevant MongoDB.
 */
-mongoose.connect('mongodb://127.0.0.1:27017/GregLimDB', {useNewUrlParser: true})
-                          
+const setupMongo = require('./mongo')
+setupMongo();               
+    
 /* 
 * Calls Express as a function to begin a new express app.
 * The second argument is a callback function that begins when
@@ -110,7 +111,7 @@ const researchController = require('./controllers/research')
 app.get('/research', researchController)
 const displaySearchResultsController = require('./controllers/displayPosts')
 app.post('/display/results', displaySearchResultsController)
-                                    
+                                                 
 /*  
 * Display Answers
 */
