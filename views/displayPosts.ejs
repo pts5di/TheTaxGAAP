@@ -41,7 +41,7 @@
                 <button class="btn-right" type="button" data-bs-target="#demo" data-bs-slide="next">
                   <span class="btn-right-text" id="nextIcon">Next</span>
                 </button>
-              </div>
+              </div>    
               <!-- The slideshow/carousel -->
               <div class="carousel-inner">
                 <div class="carousel-item active">
@@ -66,7 +66,7 @@
                 <div class="row" id = "message-body">
                   <h2 class="post-title" style = "color:dodgerblue"><%= questions[i].title %></h2>
                   <p class="post-subtitle">
-                    <%- questions[i].body.replace('\"', "") %>
+                    <%- questions[i].body.replace('\"', "") -%>
                   </p>
                 </div>
                 <div class="row" id="parent-node">
@@ -77,7 +77,6 @@
               </div>
               <% } %>          
             </div>
-           
             <!-- Blank Row -->
             <div class="row gx-4 gx-lg-5 justify-content-center"></div>
             <!-- Upvote and Downvote Buttons -->
@@ -138,7 +137,7 @@
       * Execute hideButtons Function On Completion
       */
       $("#demo").on('slid.bs.carousel', function() {
-        console.log($(".carousel-item.active #questionID")[0].innerHTML)
+        /*console.log($(".carousel-item.active #questionID")[0].innerHTML)*/
         hideButtons($(".carousel-item.active #questionID")[0].innerHTML)
       });
 
@@ -148,14 +147,6 @@
       */
       const num_parent_nodes = $(".carousel-item").length
       const score_nodes = document.querySelectorAll("#score");
-
-      $("#prevIcon").click(function() {
-        // Empty For Now
-      });
-
-      $("#nextIcon").click(function() {
-        // Empty For Now
-      });
       
       // Handle Upvote
       $("#plus").click(function(){          

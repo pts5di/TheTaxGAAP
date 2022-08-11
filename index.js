@@ -110,7 +110,7 @@ const researchController = require('./controllers/research')
 app.get('/research', researchController)
 const displaySearchResultsController = require('./controllers/displayPosts')
 app.post('/display/results', displaySearchResultsController)
-                                    
+                                                 
 /*  
 * Display Answers
 */
