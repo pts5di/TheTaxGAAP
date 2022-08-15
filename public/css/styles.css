@@ -5843,14 +5843,22 @@ textarea.form-control-lg {
 }
 
 .carousel-button-container {
+  display: flex;
+  flex-flow: row nowrap;
   width: 100%;
   text-align: center;
 }
+
+.carousel-button-container-spacer {
+  flex: 1 1 100%;
+}
+
 .btn-left, .btn-right {
   font-size: 1em;
   background: #000000;
   color: #ffffff;
   
+  flex: 1 1 50%;
   display: inline-block;
   border: 0;
   line-height: 1.5em;
@@ -5858,7 +5866,7 @@ textarea.form-control-lg {
   height: 1.6em;
   text-decoration: none;
   text-align: center;
-  margin: 0 8ch;
+  margin: 0 1.6ch;
 }
 
 .btn-left:hover, .btn-right:hover {
