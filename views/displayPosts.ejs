@@ -50,11 +50,12 @@
                     <h2 style="text-align: center">Use Left and Right Arrows </h2>
                     <h2 style="text-align: center">to Scroll</h2>
                     <h2 style="text-align: center">Through Questions</h2>
-                    <p hidden id="questionID" type="number">0</p>
+                    <p hidden id="questionID" type="number">-1</p>
                     <% } else { %>
                       <h2 style="text-align: center">No Results</h2>
                       <h2 style="text-align: center">Post Your Own Question</h2>
-                      <p hidden id="questionID" type="number">0</p>
+                      <p hidden id="questionID" type="number">-1</p>
+                      <p hidden id="userVote" type="number">0</p>
                     <% } %>  
                   </div>
                 </div>
@@ -73,6 +74,7 @@
                   <p><strong>Posted by: </strong><%= questions[i].userid.username %> on <%= questions[i].datePosted.toDateString() %> </p>
                   <p id="score"><strong>Relevance: </strong><%= questions[i].upvotes %></p>
                   <p hidden id="questionID" type="number"><%= questions[i]._id %></p>
+                  <p hidden id="userVote" type="number"><%= questions[i].userVote %></p>
                 </div>
               </div>
               <% } %>          
@@ -152,55 +154,86 @@
       $("#plus").click(function(){          
           // Find the questionID for the active carousel item
           var stringPostID = $(".carousel-item.active #questionID")[0].innerHTML
-          console.log("stringPostID: " + stringPostID);
-          
+          var userVoteNode = $(".carousel-item.active #userVote")[0]
           // Find the score_node element associated with the active item
           var score_node = $(".carousel-item.active #score")[0]
 
-          $.ajax({
-            type: "post",
-            url: "/vote",
-            datatype: "json",
-            data: {"questionID" : stringPostID, "action" : "upvoteQuestion"},
-            success: function(result) {
-              console.log("Result: " + JSON.stringify(result))
-              console.log("result.revisedScore: " + result.revisedScore);
-              score_node.innerHTML = "<strong>Relevance: </strong>" + result.revisedScore;
-              alert("Your upvote has been recorded!");
-            }
-          })
+          if (Number.parseInt(userVoteNode.innerText) != 1) {
+            $.ajax({
+              type: "post",
+              url: "/vote",
+              datatype: "json",
+              data: {"questionID" : stringPostID, "action" : "upvote", "type": "Question"},
+              success: function(result) {
+                console.log("Result: " + JSON.stringify(result))
+                console.log("result.revisedScore: " + result.revisedScore);
+                userVoteNode.innerHTML = "1";
+                score_node.innerHTML = "<strong>Relevance: </strong>" + result.revisedScore;
+              }
+            })
+          }
+          else {
+            $.ajax({
+              type: "post",
+              url: "/vote",
+              datatype: "json",
+              data: {"questionID" : stringPostID, "action" : "cancel", "type": "Question"},
+              success: function(result) {
+                console.log("Result: " + JSON.stringify(result))
+                console.log("result.revisedScore: " + result.revisedScore);
+                userVoteNode.innerHTML = "0";
+                score_node.innerHTML = "<strong>Relevance: </strong>" + result.revisedScore;
+              }
+            })
+          }
         }
       );
   
       // Handle Downvote
       $("#minus").click(function(event){
           
-        var rationale = explainDownvote();
         
         // Find the questionID for the active carousel item
         var stringPostID = $(".carousel-item.active #questionID")[0].innerHTML
-        console.log("stringPostID: " + stringPostID);
+        var userVoteNode = $(".carousel-item.active #userVote")[0]
           
         // Find the score_node element associated with the active item
         var score_node = $(".carousel-item.active #score")[0]
-        
-        $.ajax({
-          type: "post",
-          url: "/vote",
-          datatype: "json",
-          data: {"questionID" : stringPostID, "action" : "downvoteQuestion", "rationale" : rationale},
-          success: function(result) {
-            console.log("Result: " + JSON.stringify(result))
-            score_node.innerHTML = "<strong>Relevance: </strong>" + result.revisedScore;
-            alert("Your downvote has been recorded!");
-          },
-          error: function(xhr, status, error) {
-            var err = eval("(" + xhr.responseText + ")");
-            alert(err.Message);
-          }
-        })
+        if (Number.parseInt(userVoteNode.innerText) != -1) {
+          $.ajax({
+            type: "post",
+            url: "/vote",
+            datatype: "json",
+            data: {"questionID" : stringPostID, "action" : "downvote", "type": "Question", "rationale" : rationale},
+            success: function(result) {
+              console.log("Result: " + JSON.stringify(result))
+              userVoteNode.innerHTML = "-1";
+              score_node.innerHTML = "<strong>Relevance: </strong>" + result.revisedScore;
+            },
+            error: function(xhr, status, error) {
+              var err = eval("(" + xhr.responseText + ")");
+              alert(err.Message);
+            }
+          })
+        } 
+        else {
+          $.ajax({
+            type: "post",
+            url: "/vote",
+            datatype: "json",
+            data: {"questionID" : stringPostID, "action" : "cancel", "type": "Question", "rationale" : rationale},
+            success: function(result) {
+              console.log("Result: " + JSON.stringify(result))
+              userVoteNode.innerHTML = "0";
+              score_node.innerHTML = "<strong>Relevance: </strong>" + result.revisedScore;
+            },
+            error: function(xhr, status, error) {
+              var err = eval("(" + xhr.responseText + ")");
+              alert(err.Message);
+            }
+          })
         }
-      );
+      });
 
       document.getElementById('submitButton').onclick = function() {
         this.value = $(".carousel-item.active #questionID")[0].innerHTML;
