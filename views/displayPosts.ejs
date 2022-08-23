@@ -3,6 +3,15 @@
 
   <%- include('layouts/header');-%>
 
+  <style>
+    #actionBar.upvote #plus {
+      background-color: orange;
+    }
+    #actionBar.downvote #minus {
+      background-color: aquamarine;
+    }
+  </style>
+
 <body>
 
   <%- include('layouts/navbar');-%>
@@ -83,7 +92,7 @@
             <div class="row gx-4 gx-lg-5 justify-content-center"></div>
             <!-- Upvote and Downvote Buttons -->
             <div class="row gx-4 gx-lg-5 justify-content-center">
-              <div class="text-center" style="width: 100%; white-space: nowrap;"> 
+              <div class="text-center" id="actionBar" style="width: 100%; white-space: nowrap;"> 
                 <button style = "display: inline-block; width: 11%; border:2px solid black; border-radius: 10px; background-color: none; margin-left:10px" id="minus"><i class="fas fa-thumbs-down"></i></button>                                
                 <form action="/display/answers" method="POST" style="display: inline-block">
                   <button id="submitButton" name="questionID" value="0" style = "border-radius: 8px; margin-left: 10px; margin-right: 10px; background-color:darkcyan; width: 78%; border:2px solid black; margin-bottom:15px" type="submit">Answers</button>
@@ -132,7 +141,23 @@
       /*
       *  Hide the Buttons on Initial Display
       */ 
-      hideButtons (0)
+      hideButtons (-1)
+
+      function refreshActionBar() {
+        $("#actionBar").removeClass("upvote").removeClass("downvote");
+        var userVoteNode = $(".carousel-item.active #userVote")[0]
+        if (!!userVoteNode) {
+          var className = "";
+          if (Number.parseInt(userVoteNode.innerText) == 1) {
+            className = "upvote";
+          } else if (Number.parseInt(userVoteNode.innerText) == -1) {
+            className = "downvote";
+          }
+          if (className != "") {
+            $("#actionBar").addClass(className);
+          }
+        }
+      }
       
       /*
       * Figure Out What to Hide When Carousel Slides
@@ -141,6 +166,8 @@
       $("#demo").on('slid.bs.carousel', function() {
         /*console.log($(".carousel-item.active #questionID")[0].innerHTML)*/
         hideButtons($(".carousel-item.active #questionID")[0].innerHTML)
+
+        refreshActionBar();
       });
 
       /*
@@ -169,6 +196,8 @@
                 console.log("result.revisedScore: " + result.revisedScore);
                 userVoteNode.innerHTML = "1";
                 score_node.innerHTML = "<strong>Relevance: </strong>" + result.revisedScore;
+
+                refreshActionBar();
               }
             })
           }
@@ -183,6 +212,8 @@
                 console.log("result.revisedScore: " + result.revisedScore);
                 userVoteNode.innerHTML = "0";
                 score_node.innerHTML = "<strong>Relevance: </strong>" + result.revisedScore;
+
+                refreshActionBar();
               }
             })
           }
@@ -209,6 +240,8 @@
               console.log("Result: " + JSON.stringify(result))
               userVoteNode.innerHTML = "-1";
               score_node.innerHTML = "<strong>Relevance: </strong>" + result.revisedScore;
+
+              refreshActionBar();
             },
             error: function(xhr, status, error) {
               var err = eval("(" + xhr.responseText + ")");
@@ -226,6 +259,8 @@
               console.log("Result: " + JSON.stringify(result))
               userVoteNode.innerHTML = "0";
               score_node.innerHTML = "<strong>Relevance: </strong>" + result.revisedScore;
+
+              refreshActionBar();
             },
             error: function(xhr, status, error) {
               var err = eval("(" + xhr.responseText + ")");
