@@ -43,10 +43,15 @@ module.exports = async (req, res) => {
         },
         tls: { rejectUnauthorized: false }
       });
+      
+      var sender = 'thetaxgaapadmin@thetaxgaap.com';
 
       var mailOptions = {
-        from: 'admin@thetaxgaap.com',
+        from: sender,
         to: user_email,
+        // BCC email to sender; an inbox rule can be configured 
+        // to automatically filter these to Sent Items (or other outbox folder)
+        bcc: sender,
         subject: 'TheTaxGaap : Someone Answered Your Question!',
         text: 'Congratulations! ' + thisUser.username + ' just tried to answer your question.  You should check the site at www.thetaxgaap.com.  You can review their answer and upvote or downvote it.  Your upvotes and downvotes impact the profile for ' + thisUser.username + '.  You can also check your own rank and status by checking the profile tab in the menu.'
       };
