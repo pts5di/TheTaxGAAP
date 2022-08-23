@@ -42,8 +42,9 @@
                             <%= questions[i].title %>
                         </h2>
                         <p class="post-subtitle">
-                        <%= questions[i].body.replace('\"', "") %>
+                        <%- questions[i].body.replace('\"', "") %>
                         </p>
+
                         <p class="post-meta">
                             Posted by:
                             <a><%= questions[i].userid.username %></a>
