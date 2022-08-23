@@ -31,7 +31,17 @@
         <div class="col-md-10 col-lg-8 col-xl-7">
             <!-- Carousel -->
             <!-- data-bs-ride="carousel" excluded -->
-            <div id="demo" class="carousel slide"  data-bs-interval="false">     
+            <div id="demo" class="carousel slide"  data-bs-interval="false">  
+              <!-- Left and right controls/icons -->  
+              <div class="carousel-button-container">
+                <button class="btn-left" type="button" data-bs-target="#demo" data-bs-slide="prev">
+                  <span class="btn-left-text" id="prevIcon">Prev</span>
+                </button>
+                <div class="carousel-button-container-spacer"></div>
+                <button class="btn-right" type="button" data-bs-target="#demo" data-bs-slide="next">
+                  <span class="btn-right-text" id="nextIcon">Next</span>
+                </button>
+              </div>
               <!-- The slideshow/carousel -->
               <div class="carousel-inner">
                 <div class="carousel-item active">
@@ -66,14 +76,8 @@
                 </div>
               </div>
               <% } %>          
-            <!-- Left and right controls/icons -->  
             </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#demo" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" id="prevIcon"></span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#demo" data-bs-slide="next">
-            <span class="carousel-control-next-icon" id="nextIcon"></span>
-            </button>
+           
             <!-- Blank Row -->
             <div class="row gx-4 gx-lg-5 justify-content-center"></div>
             <!-- Upvote and Downvote Buttons -->
