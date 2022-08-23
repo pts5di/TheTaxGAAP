@@ -2,13 +2,13 @@ const http = require('http')
 const fs = require('fs')
 const express = require('express')
 const path = require('path')
-const mongoose = require('mongoose')
               
 /*
 * Connect to the relevant MongoDB.
 */
-mongoose.connect('mongodb://127.0.0.1:27017/GregLimDB', {useNewUrlParser: true})
-                          
+const setupMongo = require('./mongo')
+setupMongo();
+            
 /* 
 * Calls Express as a function to begin a new express app.
 * The second argument is a callback function that begins when
