@@ -3,6 +3,15 @@
 
   <%- include('layouts/header');-%>
 
+  <style>
+    #actionBar.upvote #plus {
+      background-color: orange;
+    }
+    #actionBar.downvote #minus {
+      background-color: aquamarine;
+    }
+  </style>
+
 <body>
 
   <%- include('layouts/navbar');-%>
@@ -37,6 +46,7 @@
                 <button class="btn-left" type="button" data-bs-target="#demo" data-bs-slide="prev">
                   <span class="btn-left-text" id="prevIcon">Prev</span>
                 </button>
+                <div class="carousel-button-container-spacer"></div>
                 <button class="btn-right" type="button" data-bs-target="#demo" data-bs-slide="next">
                   <span class="btn-right-text" id="nextIcon">Next</span>
                 </button>
@@ -49,11 +59,12 @@
                     <h2 style="text-align: center">Use Left and Right Arrows </h2>
                     <h2 style="text-align: center">to Scroll</h2>
                     <h2 style="text-align: center">Through Questions</h2>
-                    <p hidden id="questionID" type="number">0</p>
+                    <p hidden id="questionID" type="number">-1</p>
                     <% } else { %>
                       <h2 style="text-align: center">No Results</h2>
                       <h2 style="text-align: center">Post Your Own Question</h2>
-                      <p hidden id="questionID" type="number">0</p>
+                      <p hidden id="questionID" type="number">-1</p>
+                      <p hidden id="userVote" type="number">0</p>
                     <% } %>  
                   </div>
                 </div>
@@ -72,6 +83,7 @@
                   <p><strong>Posted by: </strong><%= questions[i].userid.username %> on <%= questions[i].datePosted.toDateString() %> </p>
                   <p id="score"><strong>Relevance: </strong><%= questions[i].upvotes %></p>
                   <p hidden id="questionID" type="number"><%= questions[i]._id %></p>
+                  <p hidden id="userVote" type="number"><%= questions[i].userVote %></p>
                 </div>
               </div>
               <% } %>          
@@ -80,7 +92,7 @@
             <div class="row gx-4 gx-lg-5 justify-content-center"></div>
             <!-- Upvote and Downvote Buttons -->
             <div class="row gx-4 gx-lg-5 justify-content-center">
-              <div class="text-center" style="width: 100%; white-space: nowrap;"> 
+              <div class="text-center" id="actionBar" style="width: 100%; white-space: nowrap;"> 
                 <button style = "display: inline-block; width: 11%; border:2px solid black; border-radius: 10px; background-color: none; margin-left:10px" id="minus"><i class="fas fa-thumbs-down"></i></button>                                
                 <form action="/display/answers" method="POST" style="display: inline-block">
                   <button id="submitButton" name="questionID" value="0" style = "border-radius: 8px; margin-left: 10px; margin-right: 10px; background-color:darkcyan; width: 78%; border:2px solid black; margin-bottom:15px" type="submit">Answers</button>
@@ -129,7 +141,23 @@
       /*
       *  Hide the Buttons on Initial Display
       */ 
-      hideButtons (0)
+      hideButtons (-1)
+
+      function refreshActionBar() {
+        $("#actionBar").removeClass("upvote").removeClass("downvote");
+        var userVoteNode = $(".carousel-item.active #userVote")[0]
+        if (!!userVoteNode) {
+          var className = "";
+          if (Number.parseInt(userVoteNode.innerText) == 1) {
+            className = "upvote";
+          } else if (Number.parseInt(userVoteNode.innerText) == -1) {
+            className = "downvote";
+          }
+          if (className != "") {
+            $("#actionBar").addClass(className);
+          }
+        }
+      }
       
       /*
       * Figure Out What to Hide When Carousel Slides
@@ -138,6 +166,8 @@
       $("#demo").on('slid.bs.carousel', function() {
         /*console.log($(".carousel-item.active #questionID")[0].innerHTML)*/
         hideButtons($(".carousel-item.active #questionID")[0].innerHTML)
+
+        refreshActionBar();
       });
 
       /*
@@ -151,55 +181,94 @@
       $("#plus").click(function(){          
           // Find the questionID for the active carousel item
           var stringPostID = $(".carousel-item.active #questionID")[0].innerHTML
-          console.log("stringPostID: " + stringPostID);
-          
+          var userVoteNode = $(".carousel-item.active #userVote")[0]
           // Find the score_node element associated with the active item
           var score_node = $(".carousel-item.active #score")[0]
 
-          $.ajax({
-            type: "post",
-            url: "/vote",
-            datatype: "json",
-            data: {"questionID" : stringPostID, "action" : "upvoteQuestion"},
-            success: function(result) {
-              console.log("Result: " + JSON.stringify(result))
-              console.log("result.revisedScore: " + result.revisedScore);
-              score_node.innerHTML = "<strong>Relevance: </strong>" + result.revisedScore;
-              alert("Your upvote has been recorded!");
-            }
-          })
+          if (Number.parseInt(userVoteNode.innerText) != 1) {
+            $.ajax({
+              type: "post",
+              url: "/vote",
+              datatype: "json",
+              data: {"questionID" : stringPostID, "action" : "upvote", "type": "Question"},
+              success: function(result) {
+                console.log("Result: " + JSON.stringify(result))
+                console.log("result.revisedScore: " + result.revisedScore);
+                userVoteNode.innerHTML = "1";
+                score_node.innerHTML = "<strong>Relevance: </strong>" + result.revisedScore;
+
+                refreshActionBar();
+              }
+            })
+          }
+          else {
+            $.ajax({
+              type: "post",
+              url: "/vote",
+              datatype: "json",
+              data: {"questionID" : stringPostID, "action" : "cancel", "type": "Question"},
+              success: function(result) {
+                console.log("Result: " + JSON.stringify(result))
+                console.log("result.revisedScore: " + result.revisedScore);
+                userVoteNode.innerHTML = "0";
+                score_node.innerHTML = "<strong>Relevance: </strong>" + result.revisedScore;
+
+                refreshActionBar();
+              }
+            })
+          }
         }
       );
   
       // Handle Downvote
       $("#minus").click(function(event){
           
-        var rationale = explainDownvote();
         
         // Find the questionID for the active carousel item
         var stringPostID = $(".carousel-item.active #questionID")[0].innerHTML
-        console.log("stringPostID: " + stringPostID);
+        var userVoteNode = $(".carousel-item.active #userVote")[0]
           
         // Find the score_node element associated with the active item
         var score_node = $(".carousel-item.active #score")[0]
-        
-        $.ajax({
-          type: "post",
-          url: "/vote",
-          datatype: "json",
-          data: {"questionID" : stringPostID, "action" : "downvoteQuestion", "rationale" : rationale},
-          success: function(result) {
-            console.log("Result: " + JSON.stringify(result))
-            score_node.innerHTML = "<strong>Relevance: </strong>" + result.revisedScore;
-            alert("Your downvote has been recorded!");
-          },
-          error: function(xhr, status, error) {
-            var err = eval("(" + xhr.responseText + ")");
-            alert(err.Message);
-          }
-        })
+        if (Number.parseInt(userVoteNode.innerText) != -1) {
+          $.ajax({
+            type: "post",
+            url: "/vote",
+            datatype: "json",
+            data: {"questionID" : stringPostID, "action" : "downvote", "type": "Question", "rationale" : rationale},
+            success: function(result) {
+              console.log("Result: " + JSON.stringify(result))
+              userVoteNode.innerHTML = "-1";
+              score_node.innerHTML = "<strong>Relevance: </strong>" + result.revisedScore;
+
+              refreshActionBar();
+            },
+            error: function(xhr, status, error) {
+              var err = eval("(" + xhr.responseText + ")");
+              alert(err.Message);
+            }
+          })
+        } 
+        else {
+          $.ajax({
+            type: "post",
+            url: "/vote",
+            datatype: "json",
+            data: {"questionID" : stringPostID, "action" : "cancel", "type": "Question", "rationale" : rationale},
+            success: function(result) {
+              console.log("Result: " + JSON.stringify(result))
+              userVoteNode.innerHTML = "0";
+              score_node.innerHTML = "<strong>Relevance: </strong>" + result.revisedScore;
+
+              refreshActionBar();
+            },
+            error: function(xhr, status, error) {
+              var err = eval("(" + xhr.responseText + ")");
+              alert(err.Message);
+            }
+          })
         }
-      );
+      });
 
       document.getElementById('submitButton').onclick = function() {
         this.value = $(".carousel-item.active #questionID")[0].innerHTML;

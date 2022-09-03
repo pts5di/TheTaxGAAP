@@ -8,4 +8,4 @@ function setupMongo() {
     mongoose.syncIndexes();
 }
 
-module.exports = setupMongo 
+module.exports = setupMongo
