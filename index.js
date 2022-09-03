@@ -2,22 +2,13 @@ const http = require('http')
 const fs = require('fs')
 const express = require('express')
 const path = require('path')
-<<<<<<< HEAD
-const mongoose = require('mongoose')
-=======
->>>>>>> 1a02ade290c0ebebe4d431787e4fedc0dec87a24
               
 /*
 * Connect to the relevant MongoDB.
 */
 const setupMongo = require('./mongo')
-<<<<<<< HEAD
-setupMongo();               
-    
-=======
 setupMongo();
             
->>>>>>> 1a02ade290c0ebebe4d431787e4fedc0dec87a24
 /* 
 * Calls Express as a function to begin a new express app.
 * The second argument is a callback function that begins when
