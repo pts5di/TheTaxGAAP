@@ -1,5 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
+    <script>
+        function validateForm(formName, firstFieldName, secondFieldName, thirdFieldName) {
+            let firstField = document.forms[formName][firstFieldName].value;
+            let secondField = document.forms[formName][secondFieldName].value;
+            let thirdField = document.forms[formName][thirdFieldName].value;
+            let problemBoolean = false;
+            let myAlertString = "";
+            if (firstField == "") {
+                problemBoolean = true;
+                let myAlertString = "The title field must be filled in. ";
+            }
+            if (secondField == "") {
+                problemBoolean = true;
+                let myAlertString = myAlertString + "At least one keyword or phrase must be specified. ";
+            }
+            if (thirdField == "") {
+                problemBoolean = true;
+                let myAlertString = myAlertString + "The body of the message must be filled in. ";
+            }
+
+            if (problemBoolean) {
+                alert(myAlertString);
+                return false;
+            }
+        } 
+    </script>
+
     <%- include('layouts/header'); -%>
     <body>
         <!-- Navigation-->
@@ -26,7 +53,7 @@
                             <!-- * * * * * * * * * * * * * * *-->
                             <!-- * * SB Forms Contact Form * *-->
                             <!-- * * * * * * * * * * * * * * *-->
-                            <form action="/posts/store" method="POST">
+                            <form name="myForm" action="/posts/store" onsubmit="return validateForm('myForm', 'title', 'keyword1', 'body')" method="POST">
                                 <div class="form-floating">
                                     <input class="form-control" id="title" type="text" placeholder="Short title..." data-sb-validations="required" name="title"/>
                                     <label for="title">Title</label>

@@ -88,21 +88,15 @@ app.get('/', homeController)
 const myProfileController = require("./controllers/myProfile");
 app.get('/myProfile', myProfileController)
             
-/*   
-*   Handle Research
-*/
-app.get('/research', (req,res) => {
-    res.render('research');
-})
                        
 /*
 * Handle Question Posts
 */
 const newPostController = require('./controllers/newPost')
-app.get('/posts/new', /*authMiddleware,*/ newPostController)
+app.get('/posts/new', newPostController)
 const storePostController = require('./controllers/storePost')
-app.post('/posts/store', /*authMiddleware, */ storePostController)
-                                                        
+app.post('/posts/store', storePostController)
+                                                          
 /*
 * Handle Research Request
 */

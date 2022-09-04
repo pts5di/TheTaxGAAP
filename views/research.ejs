@@ -1,5 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+    <script>
+        function validateForm(formName, fieldName) {
+            let thisField = document.forms[formName][fieldName].value;
+            if (thisField == "") {
+                alert("TTG Alert: At least the first search term must be filled in.");
+            return false;
+            }
+        } 
+    </script>
     <%- include('layouts/header'); -%>
     <body>
         <!-- Navigation-->
@@ -17,6 +26,31 @@
                 </div>
             </div>
         </header>
+        <!-- CHIRON -->
+        <div class="hwrap">
+            <%
+            var max = keywords.length;
+            var min = -1;
+            let index = max-1;
+            if (max > 5) {
+                min = max - 6;
+            } else {
+                min = -1;
+            }
+            %>
+            <div class="hmove">
+                <div class="hitem">Here</div>
+                <div class="hitem">Are</div>
+                <div class="hitem">Suggestions</div>
+                <div class="hitem">For</div>
+                <div class="hitem">Your</div>
+                <div class="hitem">Search . . .</div>
+                <% for (var i = index; i > min; i--) {    %>
+                <div class="hitem"><strong>Keyword: </strong> <%= keywords[i].keyword1 %></div>
+                <% } %>
+            </div>
+        </div>
+        <!-- END CHIRON -->  
         <!-- Main Content-->
         <main class="mb-4">
             <div class="container px-4 px-lg-5">
@@ -28,7 +62,7 @@
                             <!-- * * * * * * * * * * * * * * *-->
                             <h1>Enter Your Search Terms</h1>
                             <p>Enter at least one, but no more than three search terms.  A term may be a phrase like 'functional currency' or 'Triangular Reorganization'.  Capitalization does not matter.  Avoid using punctuation.  Also avoid using terms like 'section' or 'regulation' to better focus your search and ensure you access relevant questions and answers.</p>
-                            <form action="/display/results" method="POST">
+                            <form name="myForm"  action="/display/results"  onsubmit="return validateForm('myForm', 'first_term')" method="POST">
                                 <div class="form-floating">
                                     <input class="form-control" id="first_term" type="text"  placeholder="Enter First Term Here" data-sb-validations="required" name="first_term"/>
                                     <div class="invalid-feedback" data-sb-feedback="title:required">At least one search term is required.</div> 
