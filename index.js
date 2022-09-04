@@ -16,7 +16,7 @@ setupMongo();
 * is used for nodemon so that we can start afresh each time we save.
 */
 const app = new express()
-                                         
+                                             
 /*    
 *  EJS is our templating engine.
 */
@@ -69,7 +69,7 @@ app.use(expressSession ({
 */
 const flash = require('connect-flash');
 app.use(flash());
-                               
+                                    
 /*    
 *   Conditionally Display New Post, Login and New User
 */    
@@ -96,7 +96,7 @@ const newPostController = require('./controllers/newPost')
 app.get('/posts/new', newPostController)
 const storePostController = require('./controllers/storePost')
 app.post('/posts/store', storePostController)
-                                                          
+                                                                         
 /*
 * Handle Research Request
 */
