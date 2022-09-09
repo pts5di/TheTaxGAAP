@@ -36,7 +36,7 @@ function getVoteValue(req) {
 }
 
 async function fetchRelevantItem(req) {
-    const question = await Questions.findById(req.body.questionID).populate("answers answers.votes");
+    const question = await Questions.findById(req.body.questionID).populate("votes answers answers.votes");
     if (req.body.type == "Question") {
         return question;
     }
