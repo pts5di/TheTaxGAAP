@@ -123,7 +123,7 @@
       var upvoteButton = document.getElementById('minus');
       var downvoteButton = document.getElementById('plus');
       var submitButton = document.getElementById('submitButton');
-      if (position == 0) {
+      if (position == -1) {
         console.log("Rendering hidden")
         upvoteButton.style.visibility = "hidden";
         downvoteButton.style.visibility = "hidden";
@@ -223,7 +223,6 @@
       // Handle Downvote
       $("#minus").click(function(event){
           
-        
         // Find the questionID for the active carousel item
         var stringPostID = $(".carousel-item.active #questionID")[0].innerHTML
         var userVoteNode = $(".carousel-item.active #userVote")[0]
@@ -231,6 +230,9 @@
         // Find the score_node element associated with the active item
         var score_node = $(".carousel-item.active #score")[0]
         if (Number.parseInt(userVoteNode.innerText) != -1) {
+          
+          // Obtain downvote rationale from user
+          var rationale = explainDownvote();
           $.ajax({
             type: "post",
             url: "/vote",
