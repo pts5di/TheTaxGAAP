@@ -233,6 +233,9 @@
           
           // Obtain downvote rationale from user
           var rationale = explainDownvote();
+          if (rationale == null) {
+            return;
+          }
           $.ajax({
             type: "post",
             url: "/vote",
