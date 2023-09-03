@@ -1,6 +1,7 @@
 const Users = require('../models/User')
 const Questions = require('../models/Question');
 const Vote = require('../models/Vote');
+const { EMAIL_PASSWORD } = require('../utils/emailPassword');
 
 function countVotes(votes) {
     if (!votes) {
@@ -104,7 +105,7 @@ function notifyRelevantUser(user, subject, text) {
             service: 'Outlook365',
             auth: {
                 user: 'admin',
-                pass: require("fs").readFileSync("/home/thetaxgaap/PASSWORD", "utf8").trim()
+                pass: EMAIL_PASSWORD
             }
         });
 
