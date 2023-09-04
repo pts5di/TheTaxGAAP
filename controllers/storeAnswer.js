@@ -1,5 +1,6 @@
 const Users = require('../models/User')
 const Question = require('../models/Question');
+const { EMAIL_PASSWORD } = require('../utils/emailPassword');
 
 module.exports = async (req, res) => {
 
@@ -36,7 +37,7 @@ module.exports = async (req, res) => {
         port: 587, // secure SMTP
         auth: {
           user: "admin@thetaxgaap.com",
-          pass: require("fs").readFileSync("/home/thetaxgaap/PASSWORD", "utf8").trim()
+        pass: EMAIL_PASSWORD
         },
         tls: { rejectUnauthorized: false }
       });
