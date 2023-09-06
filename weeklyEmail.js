@@ -50,7 +50,8 @@ async function sendEmail(address, subject, body) {
         auth: {
             user: 'admin@thetaxgaap.com',
             pass: EMAIL_PASSWORD
-        }
+        },
+        tls: { rejectUnauthorized: false }
     });
     return await _sendEmail(address, subject, body, transporter);
 }
