@@ -1,6 +1,8 @@
+const crypto = require('node:crypto')
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema;
 const bcrypt = require('bcrypt')
+
 
 /* 
 *   This uniqueValidator is used to deal with the situation where 
@@ -11,7 +13,7 @@ const bcrypt = require('bcrypt')
 var uniqueValidator = require('mongoose-unique-validator');
 const { intersect } = require('mathjs');
 
-const UserSchema = new Schema ({
+const UserSchema = new Schema({
 
     username: {
         type: String,
@@ -21,7 +23,7 @@ const UserSchema = new Schema ({
     password: {
         type: String,
         required: [true, 'Please provide a password.']
-    }, 
+    },
     email: {
         type: String,
         required: [true, 'Please provide an email.']
@@ -29,7 +31,7 @@ const UserSchema = new Schema ({
     asked: {
         type: Number,
         default: 0
-    }, 
+    },
     answered: {
         type: Number,
         default: 0
@@ -37,20 +39,28 @@ const UserSchema = new Schema ({
     askedscore: {
         type: Number,
         default: 0
-    }, 
+    },
     answerscore: {
         type: Number,
         default: 0
-    }, 
+    },
     rank: {
         type: Number,
         default: 0
+    },
+    unsubscribedFromMonthly: {
+        type: Boolean,
+        default: false
+    },
+    unsubscribeSecret: {
+        type: String,
+        default: () => crypto.randomBytes(64).toString('base64url')
     }
 })
 
 UserSchema.plugin(uniqueValidator);
 
-UserSchema.pre('save', function(next) {
+UserSchema.pre('save', function (next) {
     // Mongoose makes the User schema available vis 'this'
     const user = this
 
