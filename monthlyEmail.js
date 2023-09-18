@@ -1,9 +1,24 @@
+const crypto = require('node:crypto');
 const setupMongo = require('./mongo')
 setupMongo();
-
+const User = require('./models/User')
 const Question = require('./models/Question')
 var nodemailer = require('nodemailer');
 const { EMAIL_PASSWORD } = require('./utils/emailPassword');
+
+async function getUsers() {
+    const subscribedUsers = User.find({
+        $or: [{ unsubscribedFromMonthly: { $exists: false } },
+        { unsubscribedFromMonthly: false }]
+    });
+    return subscribedUsers;
+}
+
+async function getTopics() {
+    const recentTopics = Question.find().sort({ datePosted: -1 }).limit(5);
+
+    return recentTopics;
+}
 
 async function getPosts() {
     let currentWeek = new Date()
@@ -16,20 +31,22 @@ async function getPosts() {
 
 function postsToText(questions) {
     const questionStrings = [];
-    var emailBody = "";
     for (const question of questions) {
         let questionString = "Title: " + question.title + "\n Body: " + question.body;
         questionStrings.push(questionString);
     }
 
-    if (questionStrings.length == 0) {
-        emailBody = "No new posts this week!";
-    }
-    else {
-        emailBody = questionStrings.join("\n \n");
-    }
-    return emailBody;
+    return questionStrings.join("\n \n");
 
+}
+
+function getUserStatistics(user) {
+    var userStats = "Your User Statistics:\n";
+    userStats += "Questions Asked: " + user.asked + "\n";
+    userStats += "Questions Answered: " + user.answered + "\n";
+    userStats += "Question Upvotes: " + user.askedscore + "\n";
+    userStats += "Answer Upvotes: " + user.answeredscore + "\n";
+    return userStats;
 }
 
 async function _sendEmail(address, subject, body, transporter) {
@@ -43,8 +60,10 @@ async function _sendEmail(address, subject, body, transporter) {
             text: body,
         };
 
-        const result = await transporter.sendMail(mailOptions);
+        //const result = await transporter.sendMail(mailOptions);
+        console.log(mailOptions);
         console.log('Email sent: ' + result.response);
+
     } catch (e) {
         console.log(`WARNING: Email was not sent with subject "${subject}": \n${e}`)
     }
@@ -57,15 +76,25 @@ async function sendEmail(address, subject, body) {
         auth: {
             user: 'admin@thetaxgaap.com',
             pass: EMAIL_PASSWORD
+
         }
     });
     return await _sendEmail(address, subject, body, transporter);
 }
 
 async function _runScript() {
-    const questions = await getPosts()
-    const emailBody = postsToText(questions);
-    await sendEmail("jmcdon35@uic.edu", "Weekly Posts on TheTaxGAAP", emailBody);
+    const questions = await getTopics()
+
+    const users = await getUsers();
+    for (let i = 0; i < users.length; i++) {
+        if (!users[i].unsubscribeSecret) {
+            users[i].unsubscribeSecret = crypto.randomBytes(64).toString('base64url');
+            await users[i].save();
+        }
+        const emailBody = postsToText(questions) + getUserStatistics(users[i]) + `\n <a href="https://thetaxgaap.com/unsubscribe?email=${users[i].email}&secret=${users[i].unsubscribeSecret}">Unsubscribe</a>`;
+        await sendEmail(users[i].email, "Newest Topics on TheTaxGAAP", emailBody);
+    }
+
 
 }
 
@@ -75,7 +104,7 @@ async function runScript() {
         await _runScript();
     } catch (e) {
         error = e;
-        console.error("Error in weeklyEmail#runScript(): ", e);
+        console.error("Error in monthlyEmail#runScript(): ", e);
         process.exit(1);
     }
     finally {
@@ -84,7 +113,7 @@ async function runScript() {
             process.exit(-1);
         }
 
-        console.log("Successfully sent weekly email!");
+        console.log("Successfully sent monthly email!");
         process.exit(0);
 
     }
